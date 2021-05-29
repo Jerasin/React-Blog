@@ -1,0 +1,22 @@
+.container{
+    max-width: 320px;
+    max-height: 400px;
+}
+
+.container-sm{
+ 
+    border: 3px solid white;
+    margin-top: 150px;
+    padding: 15px;
+    background-color: rgb(255, 255, 255);
+}
+
+
+.text-header{
+    text-align: center;
+}
+
+.btn{
+    width: 100%;
+    margin-top: 5px;
+}

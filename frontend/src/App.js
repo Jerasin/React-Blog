@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import  React , {useContext} from "react";
+import "./App.css";
+
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
+
+const AuthContext = React.createContext();
 
 function App() {
+  
+
+  function redirectToLogin() {
+    return <Redirect to="/login" />;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={null}>
+      <Router>
+        <div>
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/" exact>
+              {redirectToLogin()}
+            </Route>
+            <Route path="*">{redirectToLogin()}</Route>
+          </Switch>
+        </div>
+      </Router>
+    </AuthContext.Provider>
   );
 }
 
+export {AuthContext};
 export default App;
+
+
