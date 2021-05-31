@@ -16,6 +16,145 @@ export default function Register() {
 
   let history = useHistory();
 
+ 
+  const modalVai = () => {
+    return (
+      <div>
+        {/* Button trigger modal */}
+        <button
+          type="button"
+          className="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target={isError || isDuplicate ? "#errorModal" : "#successModal"}
+          
+          onClick={(e)=>{
+            e.preventDefault()
+            isRegister();
+            
+            console.log(isError || isDuplicate ? "#errorModal" : "#successModal")
+          }}
+        >
+          Register
+        </button>
+        {/* Modal */}
+
+        <div
+          className="modal fade"
+          id="errorModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Error
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">...</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="modal fade"
+          id="duplicateModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Duplicate
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">...</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+          
+        <div
+          className="modal fade"
+          id="successModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Success
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                />
+              </div>
+              <div className="modal-body">...</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+
+      </div>
+    );
+  };
+
   const regularEmailError = () => {
     return (
       <div
@@ -98,21 +237,21 @@ export default function Register() {
   const isRegister = async () => {
     setTimeout(() => {
       setDisabled(false);
-      setisError(false);
-      setisDuplicate(false);
+
     }, 1000);
     setDisabled(true);
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
     if (regularEmail.test(authen.email) === false) setisError(true);
     let result = await httpClient.post(server.REGISTER_URL, authen);
-    if(result.data.status === 404) return setisDuplicate(true);
-    console.log(result.data)
+    if (result.data.status === 404) return setisDuplicate(true);
+    console.log(result.data);
   };
   const { email, password, user_role } = authen;
   return (
     <div className="container">
       <div className="container-sm">
         <form>
+          {console.log(isError)}
           <div className="mb-3">
             <h3 className="text-header">Register</h3>
             <label htmlFor="exampleInputEmail1" className="form-label">
@@ -144,20 +283,8 @@ export default function Register() {
             />
           </div>
           <div>
-            {isError && regularEmailError()}
-            {isDuplicate && emailDuplicate()}
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={disabled}
-              onClick={(e) => {
-                e.preventDefault();
-                isRegister();
-              }}
-            >
-              Register
-            </button>
-            <br />
+            {modalVai()}
+
             <button
               type="submit"
               className="btn btn-secondary"
