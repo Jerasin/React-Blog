@@ -5,8 +5,10 @@ export default function Login() {
   let history = useHistory();
 
   return (
-    <div className="container">
+    <div className="container-fluid">
       <div className="container-sm">
+        
+      <div className="register-form">
         <form>
           <div className="mb-3">
             <h3 className="text-header">Login</h3>
@@ -16,8 +18,12 @@ export default function Login() {
             <input
               type="email"
               className="form-control"
-              id="exampleInputEmail1"
+              id="email"
+              name="email"
               aria-describedby="emailHelp"
+              // onChange={(e) => {
+              //   setAuthen({ ...authen, email: e.target.value });
+              // }}
             />
           </div>
           <div className="mb-3">
@@ -27,15 +33,27 @@ export default function Login() {
             <input
               type="password"
               className="form-control"
-              id="exampleInputPassword1"
+              id="password"
+              name="password"
+              // onChange={(e) => {
+              //   setAuthen({ ...authen, password: e.target.value });
+              // }}
             />
           </div>
-
           <div>
-            <button type="submit" className="btn btn-primary">
+          <div className="btn_register">
+          <button
+              type="submit"
+              className="btn btn-primary"
+              onClick={() => {
+                
+              }}
+            >
               Login
             </button>
-            <br />
+          </div>
+            
+            <div className="btn_cancel">
             <button
               type="submit"
               className="btn btn-secondary"
@@ -45,9 +63,14 @@ export default function Login() {
             >
               Register
             </button>
+            </div>
           </div>
         </form>
       </div>
+   
+      </div>
     </div>
   );
+
+
 }

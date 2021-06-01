@@ -1,0 +1,25 @@
+.container{
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.container-sm {
+  margin-top: 150px;
+  max-width: 300px;
+  border: 2px solid black;
+  padding: 12px;
+  background-color: rgb(255, 255, 255);
+}
+
+.btn {
+  width: 100%;
+}
+
+.btn_register {
+  padding: 4px;
+}
+
+.btn_cancel {
+  padding: 4px;
+}

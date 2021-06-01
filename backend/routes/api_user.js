@@ -48,7 +48,6 @@ router.post("/register", (req, res, next) => {
         status: 500,
         message: "Internal Server Error", // error.sqlMessage
       });
-      console.log(results.length)
     if (results.length > 0)
       return res.json({
         status: 404,
