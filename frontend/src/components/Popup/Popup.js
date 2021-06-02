@@ -2,10 +2,8 @@ import React, { useEffect } from "react";
 import "./Popup.css";
 function Popup(props) {
   useEffect(() => {
-    console.log("Popup start");
     document.documentElement.style.overflowY = "hidden";
     return () => {
-      console.log("Popup end");
       document.documentElement.style.overflowY = "auto";
     };
   }, []);
@@ -14,13 +12,19 @@ function Popup(props) {
     <div className="popup-box">
       <div className="box">
         <div className="box-content">
-          <h1 style={{color: "red"}}>{props.content}</h1>
+          <h5>
+            <i className="fas fa-times" style={{ color: "red" }} />
+            {props.content}
+          </h5>
         </div>
         <div className="box-body">
           <p>Please Check {props.content}</p>
         </div>
-        <div>
-          <button className="btn btn-primary btn_close" onClick={props.onPopupClose}>
+        <div className="container-btn">
+          <button
+            className="btn btn-primary btn_close"
+            onClick={props.onPopupClose}
+          >
             Close
           </button>
         </div>

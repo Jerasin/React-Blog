@@ -3,7 +3,6 @@ const db = require("./../server");
 const router = express.Router();
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
-const { JSONParser } = require("formidable");
 
 router.post("/fakedata", async (req, res, next) => {
   for (let index = 1; index <= 1000; index++) {
@@ -53,7 +52,7 @@ router.post("/register", (req, res, next) => {
         status: 404,
         result: "Email Duplicate",
       });
- 
+
     bcrypt.hash(user.password, 8, (err, hash) => {
       user.password = hash;
       let sql = " INSERT INTO users SET ? ";
@@ -72,15 +71,13 @@ router.post("/register", (req, res, next) => {
         return res.json(result);
       });
     });
- 
   });
 });
 
 router.get("/users", (req, res, next) => {
   // ทำการแสดงข้อมูลทั้งหมด
-  const { user } = req.body;
   let sql = " SELECT * FROM users ";
-  db.query(sql, user, (error, results, fields) => {
+  db.query(sql, (error, results, fields) => {
     // เกิด error ในคำสั่ง sql
     if (error)
       return res.status(500).json({
@@ -92,7 +89,7 @@ router.get("/users", (req, res, next) => {
       status: 200,
       data: results,
     };
-    console(result);
+    res.json(result);
   });
 });
 // Select By Id

@@ -18,11 +18,11 @@ export default function Register() {
   let history = useHistory();
 
   const isRegister = async () => {
-    if(!authen.email && !authen.password){
+    setDisabled(true);
+    if (!authen.email && !authen.password) {
       setOpenPopup(true);
       setisError(true);
     }
-    setDisabled(true);
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
     if (regularEmail.test(authen.email) === false) {
       setOpenPopup(true);
@@ -81,7 +81,9 @@ export default function Register() {
         <div className="container-sm">
           <form>
             <div className="mb-3">
-              <h3 className="text-header">Register</h3>
+              <h3 className="text-header">
+                <center>Register</center>
+              </h3>
               <label htmlFor="exampleInputEmail1" className="form-label">
                 Email :
               </label>

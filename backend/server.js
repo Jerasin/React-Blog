@@ -21,9 +21,15 @@ const db = mysql.createConnection(dbConfig);
 db.connect((err, database) => {
   if (err) return console.log(err);
   console.log("Database is Running");
-  const user_api = require("./routes/api_user");
 
+  /////////// Open Code Route //////////////////////
+  const user_api = require("./routes/api_user");
   app.use("/api/authen", user_api);
+  const product_api = require('./routes/api_product')
+  app.use("api/product",product_api)
+  const facebook_api = require("./authentication/authorize-facebook");
+  app.use("api/facebook", facebook_api);
+  /////////// Close Code Route //////////////////////
 
   app.listen(port, () => {
     console.log("Server Running Port" + " " + port);
