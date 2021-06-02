@@ -3,9 +3,10 @@ const db = require("./../server");
 const router = express.Router();
 const mysql = require("mysql");
 
-router.get("/", async (req, res, next) => {
-  res.json("Hello")
-});
+// router.get('/',(req,res)=>{
+//   res.json("Running")
+// })
 
+console.log("Running")
 
 module.exports = router;

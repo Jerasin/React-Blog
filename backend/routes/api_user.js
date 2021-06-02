@@ -4,6 +4,10 @@ const router = express.Router();
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 
+router.get('/',(req,res)=>{
+  res.json("Running")
+})
+
 router.post("/fakedata", async (req, res, next) => {
   for (let index = 1; index <= 1000; index++) {
     let user = {
@@ -52,7 +56,7 @@ router.post("/register", (req, res, next) => {
         status: 404,
         result: "Email Duplicate",
       });
-
+ 
     bcrypt.hash(user.password, 8, (err, hash) => {
       user.password = hash;
       let sql = " INSERT INTO users SET ? ";
@@ -71,13 +75,15 @@ router.post("/register", (req, res, next) => {
         return res.json(result);
       });
     });
+ 
   });
 });
 
 router.get("/users", (req, res, next) => {
   // ทำการแสดงข้อมูลทั้งหมด
+  const { user } = req.body;
   let sql = " SELECT * FROM users ";
-  db.query(sql, (error, results, fields) => {
+  db.query(sql, user, (error, results, fields) => {
     // เกิด error ในคำสั่ง sql
     if (error)
       return res.status(500).json({
