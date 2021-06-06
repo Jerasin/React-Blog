@@ -4,9 +4,7 @@ const router = express.Router();
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 
-router.get('/',(req,res)=>{
-  res.json("Running")
-})
+
 
 router.post("/fakedata", async (req, res, next) => {
   for (let index = 1; index <= 1000; index++) {
@@ -79,8 +77,9 @@ router.post("/register", (req, res, next) => {
   });
 });
 
+// Get All User
 router.get("/users", (req, res, next) => {
-  // ทำการแสดงข้อมูลทั้งหมด
+  
   const { user } = req.body;
   let sql = " SELECT * FROM users ";
   db.query(sql, user, (error, results, fields) => {
@@ -98,6 +97,7 @@ router.get("/users", (req, res, next) => {
     res.json(result);
   });
 });
+
 // Select By Id
 router.route("/user/:id").get((req, res, next) => {
   const { id } = req.params;

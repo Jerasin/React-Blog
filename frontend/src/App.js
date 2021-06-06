@@ -1,9 +1,12 @@
-import React, { useContext } from "react";
+import React, { Children, useContext } from "react";
 import "./App.css";
 
 import Login from "./components/pages/Login/Login";
 import Register from "./components/pages/Register/Register";
 import Herader from "./components/fragments/Header/Herader";
+import Footer from "./components/fragments/Footer/Footer";
+import Main from "./components/pages/Main/Main";
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,23 +16,68 @@ import {
   useHistory,
   useLocation,
 } from "react-router-dom";
-import Footer from "./components/fragments/Footer/Footer";
 
 const AuthContext = React.createContext();
 
 function App() {
-  function redirectToLogin() {
+  const redirectToLogin = () => {
     return <Redirect to="/login" />;
-  }
+  };
+
+  const pubilcRoute = ({ children, ...rest }) => {
+    let auth = true;
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          auth ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location },
+              }}
+            />
+          )
+        }
+      />
+    );
+  };
+
+  const PrivateRoute = ({ children, ...rest }) => {
+    let auth = true;
+    return (
+      <Route
+        {...rest}
+        render={({ location }) =>
+          auth ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: location },
+              }}
+            />
+          )
+        }
+      />
+    );
+  };
 
   return (
     <AuthContext.Provider value={null}>
-     {false &&<Herader />}
+      {false && <Herader />}
+
       <Router>
         <Switch>
           <Route path="/login">
             <Login />
           </Route>
+          <PrivateRoute path="/main">
+            <Main />
+          </PrivateRoute>
           <Route path="/register">
             <Register />
           </Route>

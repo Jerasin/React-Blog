@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import "./Login.css";
 import Popup from "./../../Popup/Popup";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { httpClient } from "./../../../utils/HttpClient";
+import { apiUrl, server, FB_LOGIN, GOOGLE_LOGIN } from "./../../../Constatns";
+
 export default function Login() {
+  // ไว้เปลื่ยน path
   let history = useHistory();
+  // ไว้ดู path ปัจจุบัน
+  let location = useLocation();
 
   const [authen, setAuthen] = useState({
     email: null,
@@ -59,17 +65,19 @@ export default function Login() {
       }
     }
   };
-
+  // let { from } = location.state || { from: { pathname: "/" } };
   return (
     <div className="container-fluid">
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
-
+        {console.log(location)}
         <div className="container-sm">
           <form>
             <div className="mb-3">
-              <h3 className="text-header"><center>Login</center></h3>
+              <h3 className="text-header">
+                <center>Login</center>
+              </h3>
               <label htmlFor="exampleInputEmail1" className="form-label">
                 Email :
               </label>
@@ -100,10 +108,22 @@ export default function Login() {
             </div>
             <div className="login_social">
               <center>
+                <div>
+                  <h5 className="text-social">Login Social</h5>
+                </div>
                 {/* fa-2x edit size */}
-                <i className="fab fa-facebook fa-2x" />
-                <i className="fab fa-twitter fa-2x" />
-                <i className="fab fa-google  fa-2x" />
+                <center className="icon-container">
+                  <div className="icon-fb">
+                    <a href={apiUrl + server.FB_LOGIN} >
+                      <i className="fab fa-facebook fa-2x" />
+                    </a>
+                  </div>
+                  <div className="icon-go">
+                    <a href={apiUrl + server.GOOGLE_LOGIN}>
+                      <i className="fab fa-google  fa-2x" />
+                    </a>
+                  </div>
+                </center>
               </center>
             </div>
             <div>
