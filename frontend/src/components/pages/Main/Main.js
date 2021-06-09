@@ -5,6 +5,7 @@ function Main() {
 
    const getCookie = () => { 
     let cookieArr = document.cookie.split("=")[1]; 
+    if(!cookieArr) return
     console.log(cookieArr)
     localStorage.setItem("LOCAL_ID",cookieArr)
   }

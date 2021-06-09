@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
+import { withRouter } from "react-router";
+import { AuthContext } from "../../../App";
 
-function Herader() {
+
+
+function Herader(props) {
+  const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -8,6 +14,7 @@ function Herader() {
           <a className="navbar-brand" href="#">
             Navbar
           </a>
+
           <button
             className="navbar-toggler"
             type="button"
@@ -81,7 +88,16 @@ function Herader() {
                 placeholder="Search"
                 aria-label="Search"
               />
-              <button className="btn btn-outline-success" type="submit">
+              <button
+                className="btn btn-outline-success"
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  localStorage.clear();
+                  forceUpdate();
+                  props.history.push("/login");
+                }}
+              >
                 Search
               </button>
             </form>
@@ -92,4 +108,4 @@ function Herader() {
   );
 }
 
-export default Herader;
+export default withRouter(Herader);

@@ -1,1 +1,1 @@
-npm i react-router-dom axios url-join http-proxy-middleware
+npm i react-router-dom axios url-join http-proxy-middleware jwt-decode

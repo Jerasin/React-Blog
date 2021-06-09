@@ -11,6 +11,7 @@ export default function Register() {
     user_role: "user",
   });
   const [disabled, setDisabled] = useState(false);
+  const [isSuccess, setisSuccess] = useState(false);
   const [isError, setisError] = useState(false);
   const [isDuplicate, setisDuplicate] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
@@ -35,6 +36,13 @@ export default function Register() {
       setisDuplicate(true);
       return;
     }
+    if (result.data.status === 200) {
+      setOpenPopup(true);
+      setisSuccess(true);
+    }
+    setTimeout(() => {
+      history.push("/login");
+    }, 1000);
   };
 
   const closePopup = () => {
@@ -53,6 +61,7 @@ export default function Register() {
             onPopupClose={() => {
               closePopup();
             }}
+            icon={<i className="fas fa-times" style={{ color: "red" }} />}
             content={error}
           />
         );
@@ -64,7 +73,26 @@ export default function Register() {
             onPopupClose={() => {
               closePopup();
             }}
+            icon={<i className="fas fa-times" style={{ color: "red" }} />}
             content={error}
+          />
+        );
+      }
+
+      if (isSuccess) {
+        let success = "Success";
+        return (
+          <Popup
+            onPopupClose={() => {
+              closePopup();
+            }}
+            icon={
+              <i
+                className="fas fa-check-circle"
+                style={{ color: "green", marginRight: "10px" }}
+              />
+            }
+            content={success}
           />
         );
       }
@@ -143,4 +171,5 @@ export default function Register() {
       </div>
     </div>
   );
+
 }

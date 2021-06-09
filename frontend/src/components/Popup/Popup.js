@@ -13,7 +13,7 @@ function Popup(props) {
       <div className="box">
         <div className="box-content">
           <h5>
-            <i className="fas fa-times" style={{ color: "red" }} />
+            {props.icon}
             {props.content}
           </h5>
         </div>

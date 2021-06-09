@@ -78,7 +78,7 @@ p {
 
 .fa-facebook {
   height: 40px;
-  width: 40px;
+  width: 38px;
 }
 
 .text-social {
@@ -106,3 +106,27 @@ p {
   padding-top: 10px;
   padding-left: 10px;
 }
+
+.container-fb{
+  width: 100%;
+  max-width: 248px;
+  padding: 4px;
+  max-height: 38px;
+  margin-bottom: 10px;
+}
+
+.my-facebook-button-class{
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 248px;
+  padding: 6px 12px;
+  max-height: 38px;
+ 
+}
+
+.metro{
+  max-width: 248px;
+  max-height: 38px;
+}
+

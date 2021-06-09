@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import "./Login.css";
 import Popup from "./../../Popup/Popup";
 import { useHistory, useLocation } from "react-router-dom";
 import { httpClient } from "./../../../utils/HttpClient";
+import FacebookLogin from "react-facebook-login";
+
 import { apiUrl, server, FB_LOGIN, GOOGLE_LOGIN } from "./../../../Constatns";
+import { AuthContext } from "../../../App";
 
 export default function Login() {
   // ไว้เปลื่ยน path
@@ -11,14 +14,19 @@ export default function Login() {
   // ไว้ดู path ปัจจุบัน
   let location = useLocation();
 
-  const [authen, setAuthen] = useState({
-    email: null,
-    password: null,
-  });
+  const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
   const [disabled, setDisabled] = useState(false);
   const [isError, setisError] = useState(false);
   const [isDuplicate, setisDuplicate] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+
+  
+
+  // const [authen, setAuthen] = useState({
+  //   email: null,
+  //   password: null,
+  //   user_role: "user",
+  // });
 
   const { email, password, user_role } = authen;
 
@@ -30,12 +38,39 @@ export default function Login() {
     setDisabled(false);
   };
 
-  const isLogin = () => {
+  const isLogin = async () => {
     setDisabled(true);
     if (!email && !password) {
       setisError(true);
       setOpenPopup(true);
+      return
     }
+    let result = await httpClient.post(server.LOGIN_URL , authen)
+    if(result.data.status === 200){
+      localStorage.setItem("localID", result.data.result)
+      forceUpdate();
+      history.push('/main')
+      return
+    }
+  };
+
+  const responseFacebook = (response) => {
+    try {
+      setAuthen({
+        isLogin: true,
+        email: response.email,
+        password: response.id,
+        user_role: "user",
+      });
+      
+      history.push("/main");
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const isLoginFb = () => {
+    console.log(authen);
   };
 
   // Popup Component
@@ -65,13 +100,13 @@ export default function Login() {
       }
     }
   };
-  // let { from } = location.state || { from: { pathname: "/" } };
+  
   return (
+
     <div className="container-fluid">
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
-        {console.log(location)}
         <div className="container-sm">
           <form>
             <div className="mb-3">
@@ -114,7 +149,7 @@ export default function Login() {
                 {/* fa-2x edit size */}
                 <center className="icon-container">
                   <div className="icon-fb">
-                    <a href={apiUrl + server.FB_LOGIN} >
+                    <a href={apiUrl + server.FB_LOGIN}>
                       <i className="fab fa-facebook fa-2x" />
                     </a>
                   </div>
@@ -127,6 +162,21 @@ export default function Login() {
               </center>
             </div>
             <div>
+              <div className="container-fb">
+                <FacebookLogin
+                  appId="870240086864574"
+                  autoLoad={false}
+                  textButton=""
+                  fields="name,email,picture"
+                  onClick={() => {
+                    isLoginFb();
+                  }}
+                  callback={responseFacebook}
+                  cssClass="btn btn-primary"
+                  icon="fa-facebook"
+                />
+              </div>
+
               <div className="btn_register">
                 <button
                   type="submit"
@@ -156,5 +206,7 @@ export default function Login() {
         </div>
       </div>
     </div>
-  );
+ 
+ );
+  
 }

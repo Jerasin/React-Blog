@@ -1,6 +1,6 @@
-import React, { Children, useContext } from "react";
+import React, { Children, useContext, useState, useCallback } from "react";
 import "./App.css";
-
+import jwt_decode from "jwt-decode";
 import Login from "./components/pages/Login/Login";
 import Register from "./components/pages/Register/Register";
 import Herader from "./components/fragments/Header/Herader";
@@ -24,21 +24,41 @@ function App() {
     return <Redirect to="/login" />;
   };
 
-  const pubilcRoute = ({ children, ...rest }) => {
-    let auth = true;
+  const [authen, setAuthen] = useState({
+    isLogin: false,
+    email: null,
+    password: null,
+    user_role: null,
+  });
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  const isLogin = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      let decoded = jwt_decode(token);
+
+      return decoded.email;
+      return false;
+    } catch (err) {
+      localStorage.clear();
+    }
+  };
+
+  const PubilcRoute = ({ children, ...rest }) => {
     return (
       <Route
         {...rest}
         render={({ location }) =>
-          auth ? (
-            children
-          ) : (
+          isLogin() ? (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/main",
                 state: { from: location },
               }}
             />
+          ) : (
+            children
           )
         }
       />
@@ -46,12 +66,11 @@ function App() {
   };
 
   const PrivateRoute = ({ children, ...rest }) => {
-    let auth = true;
     return (
       <Route
         {...rest}
         render={({ location }) =>
-          auth ? (
+          isLogin() ? (
             children
           ) : (
             <Redirect
@@ -67,27 +86,27 @@ function App() {
   };
 
   return (
-    <AuthContext.Provider value={null}>
-      {false && <Herader />}
-
+    <AuthContext.Provider value={{ authen, setAuthen, forceUpdate }}>
       <Router>
+        {console.log(isLogin())}
+        {isLogin() && <Herader />}
         <Switch>
-          <Route path="/login">
+          <PubilcRoute path="/login">
             <Login />
-          </Route>
+          </PubilcRoute>
           <PrivateRoute path="/main">
             <Main />
           </PrivateRoute>
-          <Route path="/register">
+          <PubilcRoute path="/register">
             <Register />
-          </Route>
+          </PubilcRoute>
           <Route path="/" exact>
             {redirectToLogin()}
           </Route>
           <Route path="*">{redirectToLogin()}</Route>
+          {isLogin() && <Footer />}
         </Switch>
       </Router>
-      {false && <Footer />}
     </AuthContext.Provider>
   );
 }
