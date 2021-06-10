@@ -1,4 +1,4 @@
-import React, { Children, useContext, useState, useCallback } from "react";
+import React, { Children, useState, useCallback } from "react";
 import "./App.css";
 import jwt_decode from "jwt-decode";
 import Login from "./components/pages/Login/Login";
@@ -6,7 +6,9 @@ import Register from "./components/pages/Register/Register";
 import Herader from "./components/fragments/Header/Herader";
 import Footer from "./components/fragments/Footer/Footer";
 import Main from "./components/pages/Main/Main";
-
+import AuthContextProvider from "./AuthContext";
+import PrivateRoute from "./PrivateRoute";
+import PubilcRoute from "./PubilcRoute";
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,79 +19,28 @@ import {
   useLocation,
 } from "react-router-dom";
 
-const AuthContext = React.createContext();
-
 function App() {
   const redirectToLogin = () => {
     return <Redirect to="/login" />;
   };
 
-  const [authen, setAuthen] = useState({
-    isLogin: false,
-    email: null,
-    password: null,
-    user_role: null,
-  });
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const isLogin = () => {
-    try {
-      let token = localStorage.getItem("localID");
-      let decoded = jwt_decode(token);
-
-      return decoded.email;
-      return false;
-    } catch (err) {
-      localStorage.clear();
-    }
-  };
-
-  const PubilcRoute = ({ children, ...rest }) => {
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          isLogin() ? (
-            <Redirect
-              to={{
-                pathname: "/main",
-                state: { from: location },
-              }}
-            />
-          ) : (
-            children
-          )
-        }
-      />
-    );
-  };
-
-  const PrivateRoute = ({ children, ...rest }) => {
-    return (
-      <Route
-        {...rest}
-        render={({ location }) =>
-          isLogin() ? (
-            children
-          ) : (
-            <Redirect
-              to={{
-                pathname: "/login",
-                state: { from: location },
-              }}
-            />
-          )
-        }
-      />
-    );
+    let token = localStorage.getItem("localID");
+    if (!token) return false;
+    let decoded = jwt_decode(token);
+    return decoded;
   };
 
   return (
-    <AuthContext.Provider value={{ authen, setAuthen, forceUpdate }}>
+    <AuthContextProvider forceUpdate={forceUpdate}>
       <Router>
+        {console.log("RE-render App Page")}
         {console.log(isLogin())}
         {isLogin() && <Herader />}
+        
         <Switch>
           <PubilcRoute path="/login">
             <Login />
@@ -107,9 +58,8 @@ function App() {
           {isLogin() && <Footer />}
         </Switch>
       </Router>
-    </AuthContext.Provider>
+    </AuthContextProvider>
   );
 }
 
-export { AuthContext };
 export default App;

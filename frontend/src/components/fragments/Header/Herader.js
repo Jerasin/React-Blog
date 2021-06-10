@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { withRouter } from "react-router";
-import { AuthContext } from "../../../App";
+import { AuthContext } from "../../../AuthContext";
 
 
 
@@ -92,7 +92,7 @@ function Herader(props) {
                 className="btn btn-outline-success"
                 type="submit"
                 onClick={(e) => {
-                  e.preventDefault();
+                  // e.preventDefault();
                   localStorage.clear();
                   forceUpdate();
                   props.history.push("/login");

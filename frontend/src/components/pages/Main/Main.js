@@ -10,14 +10,14 @@ function Main() {
     localStorage.setItem("LOCAL_ID",cookieArr)
   }
 
-  useEffect(() => {
-    getCookie();
-  }, []);
+  // useEffect(() => {
+  //   getCookie();
+  // }, []);
 
   return (
     <div>
       <h1>Main</h1>
-      {console.log(location)}
+      {console.log("Rerneder Main Page")}
     </div>
   );
 }

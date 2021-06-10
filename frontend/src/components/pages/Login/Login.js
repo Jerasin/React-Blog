@@ -1,14 +1,14 @@
-import React, { useState, useEffect , useContext } from "react";
+import React, { useState , useContext } from "react";
 import "./Login.css";
 import Popup from "./../../Popup/Popup";
 import { useHistory, useLocation } from "react-router-dom";
 import { httpClient } from "./../../../utils/HttpClient";
 import FacebookLogin from "react-facebook-login";
-
+import {AuthContext} from '../../../AuthContext'
 import { apiUrl, server, FB_LOGIN, GOOGLE_LOGIN } from "./../../../Constatns";
-import { AuthContext } from "../../../App";
 
-export default function Login() {
+
+export default function Login(props) {
   // ไว้เปลื่ยน path
   let history = useHistory();
   // ไว้ดู path ปัจจุบัน
@@ -39,13 +39,17 @@ export default function Login() {
   };
 
   const isLogin = async () => {
+    
     setDisabled(true);
     if (!email && !password) {
       setisError(true);
       setOpenPopup(true);
       return
     }
+    // console.log(authen)
+    // history.push('/main')
     let result = await httpClient.post(server.LOGIN_URL , authen)
+    console.log(result)
     if(result.data.status === 200){
       localStorage.setItem("localID", result.data.result)
       forceUpdate();
@@ -107,6 +111,7 @@ export default function Login() {
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
+        {console.log(authen)}
         <div className="container-sm">
           <form>
             <div className="mb-3">
