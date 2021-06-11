@@ -5,10 +5,9 @@ const AuthContext = React.createContext();
 function AuthContextProvider(props) {
 
     const [authen, setAuthen] = useState({
-        isLogin: false,
         email: null,
         password: null,
-        user_role: null,
+        user_role: "user",
       });
 
     const  {forceUpdate} = props

@@ -1,12 +1,18 @@
-import React, { useState , useContext } from "react";
+import React, { useState, useContext } from "react";
 import "./Login.css";
 import Popup from "./../../Popup/Popup";
 import { useHistory, useLocation } from "react-router-dom";
 import { httpClient } from "./../../../utils/HttpClient";
 import FacebookLogin from "react-facebook-login";
-import {AuthContext} from '../../../AuthContext'
-import { apiUrl, server, FB_LOGIN, GOOGLE_LOGIN } from "./../../../Constatns";
-
+import { AuthContext } from "../../../AuthContext";
+import {
+  apiUrl,
+  server,
+  REGISTER_URL,
+  FB_LOGIN,
+  GOOGLE_LOGIN,
+  REGISTER_FB_URL,
+} from "./../../../Constatns";
 
 export default function Login(props) {
   // ไว้เปลื่ยน path
@@ -14,20 +20,11 @@ export default function Login(props) {
   // ไว้ดู path ปัจจุบัน
   let location = useLocation();
 
-  const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
+  const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
   const [disabled, setDisabled] = useState(false);
   const [isError, setisError] = useState(false);
   const [isDuplicate, setisDuplicate] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
-
-  
-
-  // const [authen, setAuthen] = useState({
-  //   email: null,
-  //   password: null,
-  //   user_role: "user",
-  // });
-
   const { email, password, user_role } = authen;
 
   // Clear State
@@ -39,42 +36,58 @@ export default function Login(props) {
   };
 
   const isLogin = async () => {
-    
     setDisabled(true);
     if (!email && !password) {
       setisError(true);
       setOpenPopup(true);
-      return
+      return;
     }
-    // console.log(authen)
-    // history.push('/main')
-    let result = await httpClient.post(server.LOGIN_URL , authen)
-    console.log(result)
-    if(result.data.status === 200){
-      localStorage.setItem("localID", result.data.result)
+    let result = await httpClient.post(server.LOGIN_URL, authen);
+    setAuthen({ email: null, password: null });
+    if (result.data.status === 200) {
+      localStorage.setItem("localID", result.data.result);
       forceUpdate();
-      history.push('/main')
-      return
+      history.push("/main");
+      return;
     }
   };
 
-  const responseFacebook = (response) => {
+  const responseFacebook = async (response) => {
     try {
-      setAuthen({
-        isLogin: true,
-        email: response.email,
-        password: response.id,
-        user_role: "user",
-      });
-      
-      history.push("/main");
+      console.log(response);
+      signup(response, "Facebook");
+      localStorage.setItem("nameID",response.name )
     } catch (err) {
       alert(err);
     }
   };
 
-  const isLoginFb = () => {
-    console.log(authen);
+  const signup = async (res, type) => {
+    const { email, id } = res;
+    let postData;
+    if (type === "Facebook" && email && id) {
+      postData = {
+        email: email,
+        password: id,
+        user_role: "user",
+      };
+      let result = await httpClient.post(server.REGISTER_FB_URL, postData);
+      if (result.data.status === 200) {
+        localStorage.setItem("localID", result.data.result);
+        forceUpdate();
+        history.push("/main");
+      }
+    }
+  };
+
+  const isLoginFb = async () => {
+    try {
+      console.log(authen);
+      let result = await httpClient.post(server.REGISTER_FB_URL, authen);
+      console.log(result.data);
+    } catch (err) {
+      localStorage.clear();
+    }
   };
 
   // Popup Component
@@ -88,30 +101,31 @@ export default function Login(props) {
               closePopup();
             }}
             content={error}
+            icon={<i className="fas fa-times" style={{ color: "red" }} />}
+            content={error}
           />
         );
       }
       if (isDuplicate) {
-        let error = "Duplicate";
+        let duplicate = "Duplicate";
         return (
           <Popup
             onPopupClose={() => {
               closePopup();
             }}
-            content={error}
+            content={duplicate}
+            icon={<i className="fas fa-times" style={{ color: "red" }} />}
           />
         );
       }
     }
   };
-  
-  return (
 
+  return (
     <div className="container-fluid">
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
-        {console.log(authen)}
         <div className="container-sm">
           <form>
             <div className="mb-3">
@@ -174,7 +188,9 @@ export default function Login(props) {
                   textButton=""
                   fields="name,email,picture"
                   onClick={() => {
-                    isLoginFb();
+                    // isLoginFb();
+                    console.log(authen);
+                    console.log("GG");
                   }}
                   callback={responseFacebook}
                   cssClass="btn btn-primary"
@@ -211,7 +227,5 @@ export default function Login(props) {
         </div>
       </div>
     </div>
- 
- );
-  
+  );
 }

@@ -1,0 +1,21 @@
+.navbar{
+    background-color: #1c1e21;
+}
+
+.navbar-status{
+    position: absolute;
+    width: 100%;
+    max-width: 180px;
+    right: 10px;
+    top: 50px;
+    background-color: #1c1e21
+}
+
+.nav_p{
+    cursor: pointer;
+    color: white;
+}
+
+.btn_navbar{
+    background-color: white;
+}

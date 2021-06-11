@@ -34,11 +34,61 @@ router.post("/fakedata", async (req, res, next) => {
   }
 });
 
+// Register and Login FB
+router.post("/register_fb", (req, res) => {
+  try {
+    console.log(req.body)
+    let user = req.body;
+    let sql = "SELECT * FROM users WHERE email = ?";
+    db.query(sql, user.email, (error, results, fields) => {
+      if (error)
+        return res.status(500).json({
+          status: 500,
+          message: error, // error.sqlMessage
+        });
+      if (results.length > 0) {
+        console.log(results);
+        const { email, user_role } = results[0];
+        let token = createToken(email, user_role, "Facebook");
+        return res.json({
+          status: 200,
+          result: token,
+        });
+      }
+
+      bcrypt.hash(user.password, 8, (err, hash) => {
+        user.password = hash;
+        let sql = " INSERT INTO users SET ? ";
+        db.query(sql, user, (error, results, fields) => {
+          // เกิด error ในคำสั่ง sql
+          if (error)
+            return res.status(500).json({
+              status: 500,
+              message: "Internal Server Error", // error.sqlMessage
+            });
+          // แสดงข้อมูลกร๊ไม่เกิด error
+          const result = {
+            status: 200,
+            data: results,
+          };
+          let token = createToken(user.email,user.user_role,"Facebook")
+          res.json({
+            status: 200,
+            result: token
+          });
+        });
+      });
+    });
+  } catch (err) {
+    res.json({ status: 500, result: err });
+  }
+});
+
 // Register
 router.post("/register", (req, res, next) => {
   try {
     let user = req.body;
-
+    console.log(req.body);
     // Check Pattrn Email
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
     if (regularEmail.test(user.email) === false)
@@ -53,7 +103,7 @@ router.post("/register", (req, res, next) => {
       if (error)
         return res.status(500).json({
           status: 500,
-          message: "Internal Server Error", // error.sqlMessage
+          message: error, // error.sqlMessage
         });
       if (results.length > 0)
         return res.json({
@@ -162,7 +212,7 @@ router.post("/login", (req, res) => {
       // Decode Hash password
       let result = bcrypt.compareSync(password, results[0].password);
 
-      let token = createToken(results[0].email,results[0].user_role, "System")
+      let token = createToken(results[0].email, results[0].user_role, "System");
 
       // มี Email และ Password ใน db
       if (result === true) {

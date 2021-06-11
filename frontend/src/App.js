@@ -28,19 +28,20 @@ function App() {
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const isLogin = () => {
-    let token = localStorage.getItem("localID");
-    if (!token) return false;
-    let decoded = jwt_decode(token);
-    return decoded;
+    try {
+      let token = localStorage.getItem("localID");
+      if (!token) return;
+      let decoded = jwt_decode(token);
+      return decoded;
+    } catch (err) {
+      localStorage.clear();
+    }
   };
 
   return (
     <AuthContextProvider forceUpdate={forceUpdate}>
       <Router>
-        {console.log("RE-render App Page")}
-        {console.log(isLogin())}
         {isLogin() && <Herader />}
-        
         <Switch>
           <PubilcRoute path="/login">
             <Login />
@@ -55,8 +56,8 @@ function App() {
             {redirectToLogin()}
           </Route>
           <Route path="*">{redirectToLogin()}</Route>
-          {isLogin() && <Footer />}
         </Switch>
+        {isLogin() && <Footer />}
       </Router>
     </AuthContextProvider>
   );

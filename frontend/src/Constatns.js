@@ -3,6 +3,7 @@ export const imageUrl = 'http://127.0.0.1:4000'
 
 export const server = {
     REGISTER_URL: "/authen/register",
+    REGISTER_FB_URL: "/authen/register_fb",
     LOGIN_URL: "/authen/login",
     FB_LOGIN: "/facebook/authen/facebook",
     GOOGLE_LOGIN: "/google/authen/google"

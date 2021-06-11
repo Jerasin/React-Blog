@@ -1,110 +1,74 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { withRouter } from "react-router";
 import { AuthContext } from "../../../AuthContext";
-
-
+import jwt_decode from "jwt-decode";
+import "./Header.css";
 
 function Herader(props) {
   const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+  const isLogin = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      if (!token) return;
+      let decoded = jwt_decode(token);
+      return decoded.email.split("@")[0];
+    } catch (err) {
+      localStorage.clear();
+    }
+  };
 
   return (
-    <header>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            Navbar
-          </a>
-
+    <nav className="navbar">
+      <div className="container-fluid">
+        <h3 className="navbar-brand" style={{color: "white"}} ><b style={{fontSize: "30px" , font: "italic small-caps bold 26px/28px Georgia, serif"}} >TechBlog</b></h3>
+        <div className="d-flex">
           <button
-            className="navbar-toggler"
+            class="custom-toggler navbar-toggler btn_navbar"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
+            data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded={!isNavCollapsed ? true : false}
             aria-label="Toggle navigation"
+            onClick={handleNavCollapse}
           >
-            <span className="navbar-toggler-icon" />
+            <i className="fas fa-bars" />
+
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Link
-                </a>
-              </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </a>
-                <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link disabled"
-                  href="#"
-                  tabIndex={-1}
-                  aria-disabled="true"
-                >
-                  Disabled
-                </a>
-              </li>
-            </ul>
-            <form className="d-flex">
-              <input
-                className="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
+        </div>
+
+        <div className="navbar-status">
+          <div
+            class={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
+            id="navbarNavAltMarkup1"
+          >
+            <p className="nav-link  nav_p">Home</p>
+            <p className="nav-link  nav_p">Features</p>
+            <p className="nav-link  nav_p">
+              <i className="fas fa-cog" style={{ paddingRight: "5px" }} />
+              Setting
+            </p>
+            <p
+              className="nav-link  nav_p"
+              onClick={() => {
+                localStorage.clear();
+                forceUpdate();
+                props.history.push("/login");
+              }}
+            >
+              <i
+                className="fas fa-sign-out-alt"
+                style={{ paddingRight: "5px" }}
               />
-              <button
-                className="btn btn-outline-success"
-                type="submit"
-                onClick={(e) => {
-                  // e.preventDefault();
-                  localStorage.clear();
-                  forceUpdate();
-                  props.history.push("/login");
-                }}
-              >
-                Search
-              </button>
-            </form>
+              Logout
+            </p>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 }
 

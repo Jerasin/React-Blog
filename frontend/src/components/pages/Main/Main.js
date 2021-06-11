@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import {AuthContext} from '../../../AuthContext'
+
 function Main() {
   let location = useLocation();
 
@@ -14,10 +16,13 @@ function Main() {
   //   getCookie();
   // }, []);
 
+  const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
+
   return (
     <div>
       <h1>Main</h1>
-      {console.log("Rerneder Main Page")}
+      {/* {console.log(authen)}
+      {console.log("Rerneder Main Page")} */}
     </div>
   );
 }

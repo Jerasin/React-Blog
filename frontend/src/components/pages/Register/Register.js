@@ -1,21 +1,22 @@
-import { React, useState } from "react";
+import { React, useState , useContext } from "react";
 import "./Register.css";
 import { useHistory } from "react-router-dom";
 import Popup from "./../../Popup/Popup";
 import { httpClient } from "../../../utils/HttpClient";
 import { server } from "../../../Constatns";
+import {AuthContext} from '../../../AuthContext'
 export default function Register() {
-  const [authen, setAuthen] = useState({
-    email: null,
-    password: null,
-    user_role: "user",
-  });
+  // const [authen, setAuthen] = useState({
+  //   email: null,
+  //   password: null,
+  //   user_role: "user",
+  // });
   const [disabled, setDisabled] = useState(false);
   const [isSuccess, setisSuccess] = useState(false);
   const [isError, setisError] = useState(false);
   const [isDuplicate, setisDuplicate] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
-
+  const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
   let history = useHistory();
 
   const isRegister = async () => {
@@ -30,7 +31,9 @@ export default function Register() {
       setisError(true);
       return;
     }
+    
     let result = await httpClient.post(server.REGISTER_URL, authen);
+    // setAuthen({ email: null , password: null , user_role: "user" });
     if (result.data.status === 404) {
       setOpenPopup(true);
       setisDuplicate(true);
