@@ -1,7 +1,8 @@
 import React, { useEffect , useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import {AuthContext} from '../../../AuthContext'
-
+import Post from '../Post/Post'
+import './Main.css'
 function Main() {
   let location = useLocation();
 
@@ -16,13 +17,23 @@ function Main() {
   //   getCookie();
   // }, []);
 
+  let postID = [1,2,3,4,5,6,7,8]
+
+  const postList = () =>{
+    return postID.map((data) => (
+      <Post key={data}/>
+      ));
+    }
   const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
 
   return (
-    <div>
+    <div className="container-fluid ">
       <h1>Main</h1>
-      {/* {console.log(authen)}
-      {console.log("Rerneder Main Page")} */}
+     <div className="grid-container">
+     <div className="grid-postlist">
+     {postList()}
+     </div>
+     </div>
     </div>
   );
 }

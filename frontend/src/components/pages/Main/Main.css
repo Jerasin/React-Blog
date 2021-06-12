@@ -1,0 +1,44 @@
+.container-fluid{
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 700px;
+    height: 100%;
+    
+}
+
+.grid-container{
+    /* padding-left: 150px; */
+    width: 100%;
+}
+
+.grid-postlist{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 15px;
+    justify-content: center;
+    align-content: center;
+
+}
+
+@media only screen and (max-width: 1300px) {
+    .grid-postlist {
+        grid-template-columns: auto auto auto ;
+        justify-content: center;
+        padding-bottom: 55px;
+    }
+  } 
+
+
+  @media only screen and (max-width: 960px) {
+    .grid-postlist {
+        grid-template-columns: auto auto ;
+        justify-content: center;
+    }
+  } 
+
+  @media only screen and (max-width: 603px) {
+    .grid-postlist {
+        grid-template-columns: auto  ;
+        justify-content: center;
+    }
+  } 

@@ -26,7 +26,7 @@ function Herader(props) {
         <h3 className="navbar-brand" style={{color: "white"}} ><b style={{fontSize: "30px" , font: "italic small-caps bold 26px/28px Georgia, serif"}} >TechBlog</b></h3>
         <div className="d-flex">
           <button
-            class="custom-toggler navbar-toggler btn_navbar"
+            className="custom-toggler navbar-toggler btn_navbar"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNavAltMarkup"
@@ -42,7 +42,7 @@ function Herader(props) {
 
         <div className="navbar-status">
           <div
-            class={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
+            className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
             id="navbarNavAltMarkup1"
           >
             <p className="nav-link  nav_p">Home</p>

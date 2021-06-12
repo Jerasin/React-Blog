@@ -1,0 +1,14 @@
+.side-bar {
+  position: fixed;
+  left: 0;
+  z-index: 999;
+  width: 130px;
+  height: 100%;
+  max-height: 626px;
+  list-style-type: none;
+  background-color: #dddddd;
+}
+
+li{
+    display: block;
+}

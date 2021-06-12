@@ -3,6 +3,7 @@ import "./App.css";
 import jwt_decode from "jwt-decode";
 import Login from "./components/pages/Login/Login";
 import Register from "./components/pages/Register/Register";
+import Sidebar from './components/fragments/Sidebar/Sidebar'
 import Herader from "./components/fragments/Header/Herader";
 import Footer from "./components/fragments/Footer/Footer";
 import Main from "./components/pages/Main/Main";
@@ -42,6 +43,7 @@ function App() {
     <AuthContextProvider forceUpdate={forceUpdate}>
       <Router>
         {isLogin() && <Herader />}
+        {/* {isLogin() && <Sidebar/>} */}
         <Switch>
           <PubilcRoute path="/login">
             <Login />

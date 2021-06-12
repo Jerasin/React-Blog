@@ -1,11 +1,13 @@
-import React from 'react'
-
+import React from "react";
+import './Footer.css'
 function Footer() {
-    return (
-        <div>
-            <h1>Footer</h1>
-        </div>
-    )
+  return (
+    <footer className="footer">
+      <div className="container-fluid footer_nav">
+        <span style={{color: "white"}} >TechBlog: Version 1.0</span>
+      </div>
+    </footer>
+  );
 }
 
-export default Footer
+export default Footer;
