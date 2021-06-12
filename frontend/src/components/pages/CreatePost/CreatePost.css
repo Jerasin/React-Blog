@@ -1,0 +1,26 @@
+b{
+    font-size: 18px;
+}
+
+.container-btn-post{
+    width: 100%;
+    justify-content: end;
+    display: grid;
+    margin-top: 15px;
+    grid-template-columns: auto auto;
+}
+
+.btn_addpost{
+    margin-right: 10px;
+}
+
+.btn_cancel{
+    padding: 0px;
+}
+
+@media only screen and (max-width: 988px) {
+    .container-btn-post{ 
+        padding-bottom: 100px;
+    
+  }
+} 

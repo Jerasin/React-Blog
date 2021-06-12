@@ -7,6 +7,7 @@ import Sidebar from './components/fragments/Sidebar/Sidebar'
 import Herader from "./components/fragments/Header/Herader";
 import Footer from "./components/fragments/Footer/Footer";
 import Main from "./components/pages/Main/Main";
+import CreatePost from './components/pages/CreatePost/CreatePost'
 import AuthContextProvider from "./AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import PubilcRoute from "./PubilcRoute";
@@ -48,12 +49,19 @@ function App() {
           <PubilcRoute path="/login">
             <Login />
           </PubilcRoute>
-          <PrivateRoute path="/main">
-            <Main />
-          </PrivateRoute>
+          
           <PubilcRoute path="/register">
             <Register />
           </PubilcRoute>
+
+          <PrivateRoute path="/main">
+            <Main />
+          </PrivateRoute>
+
+          <PrivateRoute path="/create-post">
+            <CreatePost />
+          </PrivateRoute>
+
           <Route path="/" exact>
             {redirectToLogin()}
           </Route>

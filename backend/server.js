@@ -30,8 +30,8 @@ db.connect((err, database) => {
   /////////// Open Code Route //////////////////////
   const user_api = require("./routes/api_user");
   app.use("/api/authen", user_api);
-  const product_api = require("./routes/api_product");
-  app.use("/api/product", product_api);
+  const post_api = require("./routes/api_post");
+  app.use("/api/post", post_api);
   const facebook_api = require("./authentication/authorize-facebook");
   app.use("/api/facebook", facebook_api);
   const google_api = require("./authentication/authorize-google");

@@ -9,7 +9,7 @@ function Herader(props) {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
-  const isLogin = () => {
+  const userLogin = () => {
     try {
       let token = localStorage.getItem("localID");
       if (!token) return;
@@ -45,8 +45,11 @@ function Herader(props) {
             className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
             id="navbarNavAltMarkup1"
           >
+            <p className="nav-link  nav_p">User: {userLogin()}</p>
             <p className="nav-link  nav_p">Home</p>
-            <p className="nav-link  nav_p">Features</p>
+            <p className="nav-link  nav_p" onClick={()=>{
+              props.history.push('/create-post')
+            }} >Create Post</p>
             <p className="nav-link  nav_p">
               <i className="fas fa-cog" style={{ paddingRight: "5px" }} />
               Setting
