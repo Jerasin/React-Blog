@@ -1,4 +1,6 @@
-Popup style
+.form{
+  margin-top: -180px;
+}
 .popup-box {
   position: fixed;
   background: #00000050;
@@ -17,7 +19,7 @@ Popup style
   margin: 0 auto;
   height: auto;
   max-height: 230px;
-  margin-top: 230px;
+  margin-top: 210px;
   background: #fff;
   border-radius: 0.3rem;
   padding: 0px;
@@ -128,5 +130,9 @@ p {
 .metro{
   max-width: 248px;
   max-height: 38px;
+}
+
+.btn_canceled {
+  padding: 4px;
 }
 

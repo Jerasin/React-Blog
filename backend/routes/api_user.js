@@ -4,6 +4,7 @@ const router = express.Router();
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const { createToken } = require("../authentication/genrate-token");
+const {autoGen_shortID} = require("../authentication/short-running");
 
 router.post("/test", (req, res) => {
   console.log(req.body);
@@ -37,17 +38,22 @@ router.post("/fakedata", async (req, res, next) => {
 // Register and Login FB
 router.post("/register_fb", (req, res) => {
   try {
-    console.log(req.body)
-    let user = req.body;
+    const { email, password, user_role } = req.body;
+
+    let user = {
+      email: email,
+      password: password,
+      user_role: user_role,
+      short_id: autoGen_shortID(),
+    };
     let sql = "SELECT * FROM users WHERE email = ?";
     db.query(sql, user.email, (error, results, fields) => {
       if (error)
-        return res.status(500).json({
-          status: 500,
+        return res.json({
+          status: 404,
           message: error, // error.sqlMessage
         });
       if (results.length > 0) {
-        console.log(results);
         const { email, user_role } = results[0];
         let token = createToken(email, user_role, "Facebook");
         return res.json({
@@ -62,8 +68,8 @@ router.post("/register_fb", (req, res) => {
         db.query(sql, user, (error, results, fields) => {
           // เกิด error ในคำสั่ง sql
           if (error)
-            return res.status(500).json({
-              status: 500,
+            return res.json({
+              status: 404,
               message: "Internal Server Error", // error.sqlMessage
             });
           // แสดงข้อมูลกร๊ไม่เกิด error
@@ -71,10 +77,10 @@ router.post("/register_fb", (req, res) => {
             status: 200,
             data: results,
           };
-          let token = createToken(user.email,user.user_role,"Facebook")
+          let token = createToken(user.email, user.user_role, "Facebook");
           res.json({
             status: 200,
-            result: token
+            result: token,
           });
         });
       });
@@ -87,38 +93,43 @@ router.post("/register_fb", (req, res) => {
 // Register
 router.post("/register", (req, res, next) => {
   try {
-    let user = req.body;
-    console.log(req.body);
+    const { email, password, user_role } = req.body;
     // Check Pattrn Email
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
-    if (regularEmail.test(user.email) === false)
-      return res.status(404).json({
+    if (regularEmail.test(email) === false)
+      return res.json({
         status: 404,
         result: "Please Check Email",
       });
     // Check Duplicate Email
 
     let sql = "SELECT * FROM users WHERE email = ?";
-    db.query(sql, user.email, (error, results, fields) => {
+    db.query(sql, email, (error, results, fields) => {
       if (error)
-        return res.status(500).json({
-          status: 500,
-          message: error, // error.sqlMessage
-        });
-      if (results.length > 0)
         return res.json({
           status: 404,
-          result: "Email Duplicate",
+          message: error, // error.sqlMessage
         });
+      if (results.length > 0) 
+      return res.json({
+        status: 404,
+        result: "Email Duplicate",
+      });
 
+      let user = {
+        email: email,
+        password: password,
+        user_role: user_role,
+        short_id: runningShortId(),
+      };
       bcrypt.hash(user.password, 8, (err, hash) => {
         user.password = hash;
         let sql = " INSERT INTO users SET ? ";
         db.query(sql, user, (error, results, fields) => {
           // เกิด error ในคำสั่ง sql
           if (error)
-            return res.status(500).json({
-              status: 500,
+            return res.json({
+              status: 404,
               message: "Internal Server Error", // error.sqlMessage
             });
           // แสดงข้อมูลกร๊ไม่เกิด error
@@ -129,10 +140,13 @@ router.post("/register", (req, res, next) => {
           return res.json(result);
         });
       });
+    
     });
+  
   } catch (err) {
-    res.json({ status: 404, result: err });
+    res.json({ status: 500, result: err });
   }
+
 });
 
 // Get All User
@@ -144,7 +158,7 @@ router.get("/users", (req, res, next) => {
       // เกิด error ในคำสั่ง sql
       if (error)
         return res.status(500).json({
-          status: 500,
+          status: 404,
           message: "Internal Server Error", // error.sqlMessage
         });
       // แสดงข้อมูลกร๊ไม่เกิด error
@@ -156,7 +170,7 @@ router.get("/users", (req, res, next) => {
     });
   } catch (err) {
     res.json({
-      status: 404,
+      status: 500,
       result: err,
     });
   }
@@ -172,7 +186,7 @@ router.route("/user/:id").get((req, res, next) => {
       // เกิด error ในคำสั่ง sql
       if (error)
         return res.status(500).json({
-          status: 500,
+          status: 404,
           message: "Internal Server Error", // error.sqlMessage
         });
       // แสดงข้อมูลกร๊ไม่เกิด error
@@ -184,7 +198,7 @@ router.route("/user/:id").get((req, res, next) => {
     });
   } catch (err) {
     res.json({
-      status: 404,
+      status: 500,
       result: err,
     });
   }
@@ -198,7 +212,7 @@ router.post("/login", (req, res) => {
     db.query(sql, email, (error, results, fields) => {
       if (error)
         return res.status(500).json({
-          status: 500,
+          status: 404,
           message: "Internal Server Error", // error.sqlMessage
         });
 
@@ -230,7 +244,7 @@ router.post("/login", (req, res) => {
     });
   } catch (err) {
     res.json({
-      status: 404,
+      status: 505,
       result: err,
     });
   }

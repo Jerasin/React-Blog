@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "./CreatePost.css";
-import { LIMIT_UPLOADIMAGES ,server, CREATE_POST_URL } from "../../../Constatns";
+import {
+  LIMIT_UPLOADIMAGES,
+  server,
+  CREATE_POST_URL,
+} from "../../../Constatns";
 import jwt_decode from "jwt-decode";
 import { httpClient } from "../../../utils/HttpClient";
 
 function CreatePost(props) {
   let history = useHistory();
-  
+
   const [shopImages, setShopImages] = useState([]);
   const [btnaddImage, setBtnaddImage] = useState(false);
   const [postDetail, setPostDetail] = useState({
@@ -37,24 +41,30 @@ function CreatePost(props) {
         <img
           src={data.file_obj}
           key={data.file_obj}
-          style={{ height: 100, marginTop: 16, marginRight: 16 }}
+          style={{ height: 100, marginTop: 16, marginRight: 16, width: 120 }}
         />
       ));
     }
   };
 
-  const isValidation = async() => {
+  const isValidation = async () => {
     const { title, post } = postDetail;
-    console.log(postDetail)
+    // console.log(shopImages[0].file);
+    console.log(shopImages.length)
     if (title && post) {
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("post", post);
-        formData.append("post_image_1", shopImages[0]);
-        formData.append("created_by", userLogin());
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("post", post);
+      formData.append("created_by", userLogin());
 
-       let result = await httpClient.post(server.CREATE_POST_URL , formData)
-       console.log(result)
+      // ? Loop send Image
+      if(shopImages.length !== 0){
+        for (let index = 0; index < shopImages.length; index++) {
+          formData.append("post_image_" + index, shopImages[index].file);   
+        }
+      }
+     
+      let result = await httpClient.post(server.CREATE_POST_URL, formData);
     }
   };
 
@@ -63,7 +73,7 @@ function CreatePost(props) {
       let token = localStorage.getItem("localID");
       if (!token) return;
       let decoded = jwt_decode(token);
-      return decoded.email.split("@")[0];
+      return decoded.email
     } catch (err) {
       localStorage.clear();
     }
@@ -75,8 +85,8 @@ function CreatePost(props) {
         <h1 style={{ paddingTop: "15px", paddingBottom: "15px" }}>
           Create Post
         </h1>
-        <div className="container-xl">
-          <div className="mb-3">
+        <div className="container-xl container_post">
+          <div className="mb-3" style={{ paddingTop: "15px"}}>
             <label htmlFor="exampleFormControlInput1" className="form-label">
               <b>Title Post:</b>
             </label>
@@ -86,7 +96,7 @@ function CreatePost(props) {
               id="title-post"
               placeholder=""
               onChange={(e) => {
-                setPostDetail({ ...postDetail , title: e.target.value  });
+                setPostDetail({ ...postDetail, title: e.target.value });
               }}
             />
           </div>
@@ -95,7 +105,7 @@ function CreatePost(props) {
               <b>Post:</b>
             </label>
             <textarea
-            type="text"
+              type="text"
               className="form-control"
               id="exampleFormControlTextarea1"
               rows={3}
@@ -111,9 +121,10 @@ function CreatePost(props) {
               <input
                 type="file"
                 className="form-control"
-                id="title-post"
+                id="post_image"
                 placeholder=""
                 accept="image/*"
+                name="post_image"
                 multiple
                 disabled={shopImages.length <= 4 ? false : true}
                 onChange={(e) => {
@@ -123,7 +134,7 @@ function CreatePost(props) {
               />
             </div>
 
-            {showPreviewImage()}
+            <div className="container_images">{showPreviewImage()}</div>
             <div className="container-btn-post">
               <div className="btn_addpost">
                 <button
@@ -131,7 +142,6 @@ function CreatePost(props) {
                   disabled={postDetail.title && postDetail.post ? false : true}
                   onClick={() => {
                     isValidation();
-                      console.log(postDetail)
                   }}
                 >
                   Add Post

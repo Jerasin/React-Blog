@@ -5,12 +5,17 @@
 .navbar-status{
     position: absolute;
     width: 100%;
-    max-width: 180px;
+    max-width: 280px;
     right: 10px;
     top: 50px;
     background-color: #1c1e21;
     z-index: 999;
     
+}
+
+.user_profile{
+    background-color: #747474;
+    margin-bottom: 0px;
 }
 
 .nav_p{
@@ -20,4 +25,9 @@
 
 .btn_navbar{
     background-color: white;
+}
+
+.container_profile{
+    background-color: #1c1e21;
+    padding: 10px;
 }

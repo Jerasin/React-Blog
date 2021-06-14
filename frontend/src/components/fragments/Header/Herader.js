@@ -23,7 +23,16 @@ function Herader(props) {
   return (
     <nav className="navbar">
       <div className="container-fluid">
-        <h3 className="navbar-brand" style={{color: "white"}} ><b style={{fontSize: "30px" , font: "italic small-caps bold 26px/28px Georgia, serif"}} >TechBlog</b></h3>
+        <h3 className="navbar-brand" style={{ color: "white" }}>
+          <b
+            style={{
+              fontSize: "30px",
+              font: "italic small-caps bold 26px/28px Georgia, serif",
+            }}
+          >
+            TechBlog
+          </b>
+        </h3>
         <div className="d-flex">
           <button
             className="custom-toggler navbar-toggler btn_navbar"
@@ -36,7 +45,6 @@ function Herader(props) {
             onClick={handleNavCollapse}
           >
             <i className="fas fa-bars" />
-
           </button>
         </div>
 
@@ -45,11 +53,24 @@ function Herader(props) {
             className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
             id="navbarNavAltMarkup1"
           >
-            <p className="nav-link  nav_p">User: {userLogin()}</p>
+            <div className="container_profile">
+            <p className="nav-link  nav_p user_profile">
+              <i className="far fa-user" style={{ paddingRight: "5px" }} />
+              {userLogin()}
+            </p>
+            </div>
+
             <p className="nav-link  nav_p">Home</p>
-            <p className="nav-link  nav_p" onClick={()=>{
-              props.history.push('/create-post')
-            }} >Create Post</p>
+            <p
+              className="nav-link  nav_p"
+              onClick={() => {
+                props.history.push("/create-post");
+              }}
+            >
+              <i className="far fa-plus-square"style={{ paddingRight: "5px" }} />
+
+              Create Post
+            </p>
             <p className="nav-link  nav_p">
               <i className="fas fa-cog" style={{ paddingRight: "5px" }} />
               Setting

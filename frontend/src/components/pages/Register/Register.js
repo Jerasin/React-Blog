@@ -1,10 +1,15 @@
-import { React, useState , useContext } from "react";
+import { React, useState, useContext } from "react";
 import "./Register.css";
 import { useHistory } from "react-router-dom";
 import Popup from "./../../Popup/Popup";
+import {
+  SweetAlert2_Success,
+  SweetAlert2_Warning,
+  SweetAlert2_Error,
+} from "../../SweetAlert2/SweetAlert2";
 import { httpClient } from "../../../utils/HttpClient";
 import { server } from "../../../Constatns";
-import {AuthContext} from '../../../AuthContext'
+import { AuthContext } from "../../../AuthContext";
 export default function Register() {
   // const [authen, setAuthen] = useState({
   //   email: null,
@@ -16,32 +21,50 @@ export default function Register() {
   const [isError, setisError] = useState(false);
   const [isDuplicate, setisDuplicate] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
-  const {authen , setAuthen , forceUpdate} = useContext(AuthContext)
+  const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
   let history = useHistory();
 
   const isRegister = async () => {
-    setDisabled(true);
+    // ? this i make Error popup.
+    // setDisabled(true);
     if (!authen.email && !authen.password) {
-      setOpenPopup(true);
-      setisError(true);
+      // ? this i make Error popup.
+      // setOpenPopup(true);
+      // setisError(true);
+
+      // ? this i use SweetAlert2 Error popup.
+      SweetAlert2_Error();
+      return;
     }
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
     if (regularEmail.test(authen.email) === false) {
-      setOpenPopup(true);
-      setisError(true);
+      // ? this i make Error popup.
+      // setOpenPopup(true);
+      // setisError(true);
+
+      // ? this i use SweetAlert2 Error popup.
+      SweetAlert2_Error();
       return;
     }
-    
+
     let result = await httpClient.post(server.REGISTER_URL, authen);
-    // setAuthen({ email: null , password: null , user_role: "user" });
+    console.log(result)
     if (result.data.status === 404) {
-      setOpenPopup(true);
-      setisDuplicate(true);
+      // ? this i make Warning popup.
+      // setOpenPopup(true);
+      // setisDuplicate(true);
+
+      // ? this i use SweetAlert2 Warning popup.
+      SweetAlert2_Warning();
       return;
     }
     if (result.data.status === 200) {
-      setOpenPopup(true);
-      setisSuccess(true);
+      // ? this i make Success popup.
+      // setOpenPopup(true);
+      // setisSuccess(true);
+
+      // ? this i use SweetAlert2 Success popup.
+      SweetAlert2_Success();
     }
     setTimeout(() => {
       history.push("/login");
@@ -108,7 +131,6 @@ export default function Register() {
     <div className="container-fluid">
       <div className="container">
         {isPopup()}
-
         <div className="container-sm">
           <form>
             <div className="mb-3">
@@ -157,7 +179,7 @@ export default function Register() {
                 </button>
               </div>
 
-              <div className="btn_cancel">
+              <div className="btn_canceled">
                 <button
                   type="submit"
                   className="btn btn-secondary"
@@ -174,5 +196,4 @@ export default function Register() {
       </div>
     </div>
   );
-
 }

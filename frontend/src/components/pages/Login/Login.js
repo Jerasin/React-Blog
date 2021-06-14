@@ -126,7 +126,7 @@ export default function Login(props) {
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
-        <div className="container-sm">
+        <div className="container-sm form">
           <form>
             <div className="mb-3">
               <h3 className="text-header">
@@ -189,8 +189,6 @@ export default function Login(props) {
                   fields="name,email,picture"
                   onClick={() => {
                     // isLoginFb();
-                    console.log(authen);
-                    console.log("GG");
                   }}
                   callback={responseFacebook}
                   cssClass="btn btn-primary"
@@ -211,7 +209,7 @@ export default function Login(props) {
                 </button>
               </div>
 
-              <div className="btn_cancel">
+              <div className="btn_canceled">
                 <button
                   type="submit"
                   className="btn btn-secondary"
