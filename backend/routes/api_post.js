@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("../server");
 const router = express.Router();
 const mysql = require("mysql");
-const path = require("path");
+
 const uploadImagesList = require("../utils/uploadImageList");
 
 const { autoGen_postID } = require("../authentication/short-running");
@@ -68,7 +68,6 @@ router.post("/create-post", (req, res) => {
         // console.log(posts);
         let sql_insert = " INSERT INTO posts SET ? ";
         db.query(sql_insert, posts, (error, results, fields) => {
-          // console.log(posts);
           if (error)
             return res.json({
               status: 404,
@@ -78,27 +77,17 @@ router.post("/create-post", (req, res) => {
           // ? เช็คว่า files เป็น type obj และไม่มีค่า
           if (
             files &&
-            Object.keys(files).length > 0 &&
+            Object.keys(files).length === 0 &&
             files.constructor === Object
           ) {
-             uploadImagesList(
-              files,
-              post.post_id,
-              res,
-              short_id[0].short_id
-            );
+            return res.json({
+              status: 200,
+              result: "Successful",
+            });
           }
-          return res.json({
-            status: 200,
-            result: "Successful",
-          });
+          uploadImagesList(files, posts.post_id, res);
         });
       });
-
-      // res.json({
-      //   status: 200,
-      //   data: results,
-      // });
     });
   } catch (err) {
     res.json({ status: 500, result: err });
