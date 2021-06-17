@@ -176,6 +176,7 @@ function CreatePost(props) {
       </div>
     </div>
   );
+
 }
 
 export default CreatePost;

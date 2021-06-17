@@ -18,30 +18,10 @@ router.post("/create-post-test", (req, res) => {
   try {
     let form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
-      // console.log({ type: "fields", result: fields });
-      // console.log({ type: "files", result: files });
-      // if (
-      //   files &&
-      //   Object.keys(files).length === 0 &&
-      //   files.constructor === Object
-      // )
-      //   return console.log("ไม่มีรูป");
-      // if (
-      //   files &&
-      //   Object.keys(files).length > 0 &&
-      //   files.constructor === Object
-      // ) {
       const { title, post, created_by } = fields;
-
-      let autoGen_postId = await autoGen_postID();
-      let sql = "SELECT short_id FROM users WHERE email = ?";
-      db.query(sql, created_by, async (error, results, fields) => {
-        if (error) return console.log({ status: 404, result: error });
-        let postID = (await results[0].short_id) + autoGen_postId;
-        await uploadImage(files, postID, res, results[0].short_id);
-      });
-      // }
-    });
+      console.log(files)
+      // res.json({status: 200 ,results: "Success"})
+    })
   } catch (err) {
     console.log(err);
   }

@@ -11,6 +11,7 @@ import CreatePost from './components/pages/CreatePost/CreatePost'
 import AuthContextProvider from "./AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import PubilcRoute from "./PubilcRoute";
+import TextEditor from './components/TextEditor/TextEditor'
 import {
   BrowserRouter as Router,
   Switch,
@@ -60,6 +61,10 @@ function App() {
 
           <PrivateRoute path="/create-post">
             <CreatePost />
+          </PrivateRoute>
+
+          <PrivateRoute path="/text-editor">
+            <TextEditor />
           </PrivateRoute>
 
           <Route path="/" exact>

@@ -55,6 +55,7 @@ module.exports = async (files, postID, res) => {
       
       // ? เอา  Files รูปภาพที่อัพโหลดไปไว้ที่ตำแหน่ง newpath
       await fs.moveSync(files[property].path, newpath);
+      console.log(newpath);
       
 
       // ? แปลงจาก Str เป็น Arrary
