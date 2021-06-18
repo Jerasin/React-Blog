@@ -61,8 +61,12 @@ function Herader(props) {
             </div>
 
             <p className="nav-link  nav_p" onClick={() => {
+                props.history.push("/main");
+              }}>Main</p>
+
+            <p className="nav-link  nav_p" onClick={() => {
                 props.history.push("/text-editor");
-              }}>Test Editor</p>
+              }}>Text Editor</p>
             <p
               className="nav-link  nav_p"
               onClick={() => {

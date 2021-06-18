@@ -56,7 +56,7 @@ export default function Login(props) {
     try {
       console.log(response);
       signup(response, "Facebook");
-      localStorage.setItem("nameID",response.name )
+      localStorage.setItem("nameID", response.name);
     } catch (err) {
       alert(err);
     }
@@ -126,7 +126,7 @@ export default function Login(props) {
       <div className="container">
         {/* Popup Show State */}
         {isPopup()}
-        <div className="container-sm form">
+        <div className="form">
           <form>
             <div className="mb-3">
               <h3 className="text-header">

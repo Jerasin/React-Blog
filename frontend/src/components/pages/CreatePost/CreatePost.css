@@ -2,6 +2,11 @@ b {
   font-size: 18px;
 }
 
+.create-post{
+  width: 100%;
+  min-height: 650px;
+}
+
 .container-btn-post {
   width: 100%;
   justify-content: end;

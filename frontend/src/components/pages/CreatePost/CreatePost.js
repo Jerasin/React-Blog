@@ -88,7 +88,7 @@ function CreatePost(props) {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid create-post">
       <div>
         <h1 style={{ paddingTop: "15px", paddingBottom: "15px" }}>
           Create Post

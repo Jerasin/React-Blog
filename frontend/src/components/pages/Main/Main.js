@@ -2,12 +2,24 @@ import React, { useEffect, useContext , useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { AuthContext } from "../../../AuthContext";
 import { httpClient } from "../../../utils/HttpClient";
+import jwt_decode from "jwt-decode";
 import { GET_POST_TEXTEDITOR_URL, server } from "./../../../Constatns";
 import Post from "../Post/Post";
 import "./Main.css";
 function Main() {
   let location = useLocation();
   const [data, setData] = useState(null)
+
+  const checkLogin = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      let decoded = jwt_decode(token);
+      let short_id = decoded.short_id
+      return short_id;
+    } catch (err) {
+      localStorage.clear();
+    }
+  }
 
   const getCookie = () => {
     let cookieArr = document.cookie.split("=")[1];
@@ -21,7 +33,6 @@ function Main() {
     setData(result)
   }, []);
 
-  let postID = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const postList = (result) => {
     if (data === null) return;

@@ -1,44 +1,61 @@
 import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { httpClient } from "../../utils/HttpClient";
-import jwt_decode from "jwt-decode";
 import {
   server,
   CREATE_POST_TEXTEDITOR_URL,
   UPLOADIMAGES_POST_TEXTEDITOR_URL,
 } from "../../Constatns";
 
-function TextEditor() {
+function EditTextEditor() {
   const editorRef = useRef(null);
   const [showImages, setShowImages] = useState([]);
   const [postDetail, setPostDetail] = useState({
     title: null,
     post: null,
   });
-
-  const checkLogin = () => {
-    try {
-      let token = localStorage.getItem("localID");
-      let decoded = jwt_decode(token);
-      let short_id = decoded.short_id
-      return short_id;
-    } catch (err) {
-      localStorage.clear();
-    }
-  }
-
   let dataArrary = [];
 
   const log = async () => {
     if (editorRef.current) {
-      let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL, {
-        title: postDetail.title,
-        post: editorRef.current.getContent(),
-        user_created: checkLogin(),
-      });
-      console.log(editorRef.current.getContent())
+      // console.log(editorRef.current.getContent());
+      // let post = editorRef.current.getContent();
+      // await setPostDetail({ ...postDetail, post: post });
+      // console.log(postDetail)
+      // if(postDetail.post === null) return
+      let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL, {title: postDetail.title ,post:editorRef.current.getContent() });
     }
   };
+
+  const onImageChange = (file) => {
+    setShowImages([
+      ...showImages,
+      {
+        file: file,
+        file_obj: URL.createObjectURL(file),
+      },
+    ]);
+  };
+
+  // const isValidation = async () => {
+  //   const { title, post } = postDetail;
+
+  //   if (title && post) {
+  //     const formData = new FormData();
+  //     formData.append("title", title);
+  //     formData.append("post", post);
+  //     formData.append("created_by", userLogin());
+
+  //     // ? Loop send Image
+  //     if (showImages.length !== 0) {
+  //       for (let index = 0; index < showImages.length; index++) {
+  //         formData.append("post_image_" + index, showImages[index].file);
+  //       }
+  //     }
+
+  //     let result = await httpClient.post(server.CREATE_POST_URL, formData);
+  //   }
+  // };
 
   return (
     <div className="container-fluid">
@@ -47,6 +64,9 @@ function TextEditor() {
         <div style={{ paddingBottom: "15px" }}>
           <label htmlFor="exampleFormControlInput1" className="form-label">
             <b>Title Post:</b>
+            {/* {console.log(postDetail)} */}
+            {console.log(showImages)}
+            {console.log(dataArrary)}
           </label>
           <input
             type="text"
@@ -84,8 +104,11 @@ function TextEditor() {
               input.setAttribute("type", "file");
               input.setAttribute("accept", "image/*");
               input.onchange = function (dialogApi, details) {
-                let file = this.files[0];
-                cb(URL.createObjectURL(file), { title: file.name });
+                
+                  let file = this.files[0];
+                  cb(URL.createObjectURL(file), { title: file.name });
+                  
+                
               };
 
               input.click();
@@ -106,4 +129,4 @@ function TextEditor() {
   );
 }
 
-export default TextEditor;
+export default  EditTextEditor;

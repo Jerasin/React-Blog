@@ -9,19 +9,27 @@ const autoGen_shortID = () => {
   let str = "" + shortID;
   let pad = "000000";
   let shortID_NOW = pad.substring(0, pad.length - str.length) + str;
-  shortID = shortID + 1;
   return shortID_NOW;
 };
+
+const add_shortID = () => {
+  shortID = shortID + 1;
+}
 
 const autoGen_postID = () => {
   let str = "" + shortPostID;
   let pad = "00000";
   let postID_NOW = pad.substring(0, pad.length - str.length) + str;
-  shortPostID = shortPostID + 1;
   return postID_NOW;
 };
 
+const add_postID = () => {
+  shortPostID = shortPostID + 1;
+}
+
 module.exports =  {
   autoGen_shortID,
+  add_shortID,
+  add_postID,
   autoGen_postID 
 }

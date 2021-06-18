@@ -8,6 +8,7 @@ import Herader from "./components/fragments/Header/Herader";
 import Footer from "./components/fragments/Footer/Footer";
 import Main from "./components/pages/Main/Main";
 import CreatePost from './components/pages/CreatePost/CreatePost'
+import EditTextEditor from './components/TextEditor/EditTextEditor'
 import AuthContextProvider from "./AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import PubilcRoute from "./PubilcRoute";
@@ -65,6 +66,10 @@ function App() {
 
           <PrivateRoute path="/text-editor">
             <TextEditor />
+          </PrivateRoute>
+
+          <PrivateRoute path="/edit-text-editor/:id">
+            <EditTextEditor />
           </PrivateRoute>
 
           <Route path="/" exact>

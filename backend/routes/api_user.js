@@ -4,7 +4,11 @@ const router = express.Router();
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
 const { createToken } = require("../authentication/genrate-token");
-const {autoGen_shortID} = require("../authentication/short-running");
+const {
+  autoGen_shortID,
+  add_shortID,
+} = require("../authentication/short-running");
+const authorization = require("../authentication/authorize-jwt");
 
 router.post("/test", (req, res) => {
   console.log(req.body);
@@ -110,18 +114,17 @@ router.post("/register", (req, res, next) => {
           status: 404,
           message: error, // error.sqlMessage
         });
-      if (results.length > 0) 
-      return res.json({
-        status: 404,
-        result: "Email Duplicate",
-      });
-
+      if (results.length > 0)
+        return res.json({
+          status: 404,
+          result: "Email Duplicate",
+        });
       let user = {
         email: email,
         password: password,
         user_role: user_role,
-        short_id: runningShortId(),
-      };
+        short_id: autoGen_shortID(),
+      }; 
       bcrypt.hash(user.password, 8, (err, hash) => {
         user.password = hash;
         let sql = " INSERT INTO users SET ? ";
@@ -130,27 +133,25 @@ router.post("/register", (req, res, next) => {
           if (error)
             return res.json({
               status: 404,
-              message: "Internal Server Error", // error.sqlMessage
+              message: error, // error.sqlMessage
             });
           // แสดงข้อมูลกร๊ไม่เกิด error
           const result = {
             status: 200,
             data: results,
           };
+          add_shortID();
           return res.json(result);
         });
       });
-    
     });
-  
   } catch (err) {
     res.json({ status: 500, result: err });
   }
-
 });
 
 // Get All User
-router.get("/users", (req, res, next) => {
+router.get("/users", authorization, (req, res, next) => {
   try {
     const { user } = req.body;
     let sql = " SELECT * FROM users ";
@@ -177,7 +178,7 @@ router.get("/users", (req, res, next) => {
 });
 
 // Select By Id
-router.route("/user/:id").get((req, res, next) => {
+router.get("/user/:id", authorization, (req, res, next) => {
   try {
     const { id } = req.params;
     // ทำการแสดงข้อมูลทั้งหมด
@@ -226,7 +227,12 @@ router.post("/login", (req, res) => {
       // Decode Hash password
       let result = bcrypt.compareSync(password, results[0].password);
 
-      let token = createToken(results[0].email, results[0].user_role, "System");
+      let token = createToken(
+        results[0].email,
+        results[0].user_role,
+        results[0].short_id,
+        "System"
+      );
 
       // มี Email และ Password ใน db
       if (result === true) {

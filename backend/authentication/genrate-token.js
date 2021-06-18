@@ -3,11 +3,12 @@ const expressJwt = require("express-jwt");
 const jwt = require("jsonwebtoken");
 const { response } = require("express");
 
-const createToken = (email, user_role , provider) => {
+const createToken = (email, user_role , short_id , provider) => {
   return jwt.sign(
     {
       email: email,
       userRole: user_role,
+      short_id: short_id,
       from_provider: provider,
     },
     // process.env.JWT_SECRET

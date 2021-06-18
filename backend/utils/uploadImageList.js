@@ -33,7 +33,7 @@ module.exports = async (files, postID, res) => {
       // console.log( `${postID + "_" + miniId}.${fileExtention}`);
 
       // ? Custom Filename Ex: (product_id = 1150) + (fileExtention = .pdf)
-      // ? เช็ครูปซ้ำ
+
       result = `${postID + "_" + miniId}.${fileExtention}`;
 
       // ? Custom  Newpath to save Files
