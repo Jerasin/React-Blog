@@ -1,0 +1,21 @@
+.container-texteditor {
+  width: 100%;
+  max-width: 600px;
+}
+
+.gird-container{
+    display:grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+@media only screen and (max-width:950px) {
+    .gird-container{
+        display:grid;
+        grid-template-columns: 1fr;
+    }
+
+    .side{
+        display: none;
+    }
+}
+

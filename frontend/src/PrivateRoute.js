@@ -1,4 +1,5 @@
-import React from 'react'
+import React , {useContext} from 'react'
+import { AuthContext } from "../src/AuthContext";
 import jwt_decode from "jwt-decode";
 import {
     BrowserRouter as Router,
@@ -11,13 +12,17 @@ import {
   } from "react-router-dom";
 
 function PrivateRoute({children , ...rest}) {
-
+  const {  forceUpdate } = useContext(AuthContext);
 
     const isLogin = () => {
-        let token = localStorage.getItem("localID");
-        if (!token) return false;
+        try{
+          let token = localStorage.getItem("localID");
         let decoded = jwt_decode(token);
         return decoded
+        }
+        catch(err){
+          localStorage.clear();
+        }
       };
 
     return (
@@ -26,9 +31,12 @@ function PrivateRoute({children , ...rest}) {
         render={({ location }) =>
           isLogin() ? (
             children
-          ) : (
+          ) : 
+          (
             <Redirect
+            
               to={{
+                
                 pathname: "/login",
                 state: { from: location },
               }}

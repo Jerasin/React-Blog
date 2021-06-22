@@ -93,7 +93,7 @@ function CreatePost(props) {
         <h1 style={{ paddingTop: "15px", paddingBottom: "15px" }}>
           Create Post
         </h1>
-        <div className="container-xl container_post">
+        <div className="container-xl container-texteditor container_post">
           <div className="mb-3" style={{ paddingTop: "15px" }}>
             <label htmlFor="exampleFormControlInput1" className="form-label">
               <b>Title Post:</b>

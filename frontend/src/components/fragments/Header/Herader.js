@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { withRouter } from "react-router";
 import { AuthContext } from "../../../AuthContext";
 import jwt_decode from "jwt-decode";
@@ -7,9 +7,35 @@ import "./Header.css";
 function Herader(props) {
   const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
-
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
-  const userLogin = () => {
+
+
+  // ? function Click Outside Close Navbar
+  
+  const useOutsideAlerter = (ref) => {
+    useEffect(() => {
+      /**
+       * Alert if clicked on outside of element
+       */
+      function handleClickOutside(event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          setIsNavCollapsed(true);
+        }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        // Unbind the event listener on clean up
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref]);
+  };
+
+  //? State about function Click Outside Close Navbar
+  const wrapperRef = useRef(null);
+  useOutsideAlerter(wrapperRef);
+
+  const getEmail = () => {
     try {
       let token = localStorage.getItem("localID");
       if (!token) return;
@@ -23,7 +49,7 @@ function Herader(props) {
   return (
     <nav className="navbar">
       <div className="container-fluid">
-        <h3 className="navbar-brand" style={{ color: "white" }}>
+        <h3 className="navbar-brand" style={{ color: "black" }}>
           <b
             style={{
               fontSize: "30px",
@@ -35,6 +61,7 @@ function Herader(props) {
         </h3>
         <div className="d-flex">
           <button
+            ref={wrapperRef}
             className="custom-toggler navbar-toggler btn_navbar"
             type="button"
             data-bs-toggle="collapse"
@@ -48,33 +75,53 @@ function Herader(props) {
           </button>
         </div>
 
-        <div className="navbar-status">
+        <div className="navbar-status" id="navbar-status" ref={wrapperRef}>
           <div
             className={`${isNavCollapsed ? "collapse" : ""} navbar-collapse`}
             id="navbarNavAltMarkup1"
           >
             <div className="container_profile">
-            <p className="nav-link  nav_p user_profile">
-              <i className="far fa-user" style={{ paddingRight: "5px" }} />
-              {userLogin()}
-            </p>
+              <p className="nav-link  nav_p user_profile">
+                <i className="far fa-user" style={{ paddingRight: "5px" }} />
+                {getEmail()}
+              </p>
             </div>
 
-            <p className="nav-link  nav_p" onClick={() => {
+            <p
+              className="nav-link  nav_p"
+              onClick={() => {
                 props.history.push("/main");
-              }}>Main</p>
+                forceUpdate();
+              }}
+            >
+              <i className="fas fa-home" style={{ paddingRight: "5px" }} />
+              Main
+            </p>
 
-            <p className="nav-link  nav_p" onClick={() => {
+            <p
+              className="nav-link  nav_p"
+              onClick={() => {
                 props.history.push("/text-editor");
-              }}>Text Editor</p>
+                forceUpdate();
+              }}
+            >
+              <i
+                className="fas fa-plus-square"
+                style={{ paddingRight: "5px" }}
+              />
+              Text Editor
+            </p>
             <p
               className="nav-link  nav_p"
               onClick={() => {
                 props.history.push("/create-post");
+                forceUpdate();
               }}
             >
-              <i className="far fa-plus-square"style={{ paddingRight: "5px" }} />
-
+              <i
+                className="far fa-plus-square"
+                style={{ paddingRight: "5px" }}
+              />
               Create Post
             </p>
             <p className="nav-link  nav_p">

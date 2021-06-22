@@ -37,12 +37,19 @@ db.connect((err, database) => {
   // Open Code Route 
   const user_api = require("./routes/api_user");
   app.use("/api/authen", user_api);
+
   const post_api = require("./routes/api_post");
   app.use("/api/post", post_api);
+
   const texteditor_post_api = require("./routes/api_post_texteditor");
   app.use("/api/post-texteditor", texteditor_post_api);
+
+  const category_api = require("./routes/api_category");
+  app.use("/api/category", category_api);
+
   const facebook_api = require("./authentication/authorize-facebook");
   app.use("/api/facebook", facebook_api);
+  
   const google_api = require("./authentication/authorize-google");
   app.use("/api/google", google_api);
   //  Close Code Route 

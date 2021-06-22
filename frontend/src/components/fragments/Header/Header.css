@@ -1,21 +1,22 @@
 .navbar{
-    background-color: #1c1e21;
+    background-color: #ffffff;
 }
 
 .navbar-status{
     position: absolute;
     width: 100%;
     max-width: 280px;
-    right: 10px;
+    right: 0px;
     top: 50px;
-    background-color: #1c1e21;
+    background-color: #525b69;
     z-index: 999;
     
 }
 
 .user_profile{
-    background-color: #747474;
+    /* background-color: #525b69; */
     margin-bottom: 0px;
+    border: 2px solid #fff;
 }
 
 .nav_p{
@@ -31,3 +32,5 @@
     background-color: #1c1e21;
     padding: 10px;
 }
+
+

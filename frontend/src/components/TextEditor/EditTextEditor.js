@@ -18,44 +18,51 @@ function EditTextEditor() {
 
   const log = async () => {
     if (editorRef.current) {
-      // console.log(editorRef.current.getContent());
-      // let post = editorRef.current.getContent();
-      // await setPostDetail({ ...postDetail, post: post });
-      // console.log(postDetail)
-      // if(postDetail.post === null) return
-      let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL, {title: postDetail.title ,post:editorRef.current.getContent() });
+      let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL, {
+        title: postDetail.title,
+        post: editorRef.current.getContent(),
+      });
     }
   };
 
-  const onImageChange = (file) => {
-    setShowImages([
-      ...showImages,
-      {
-        file: file,
-        file_obj: URL.createObjectURL(file),
-      },
-    ]);
+
+  // ? เอา token
+  const getToken = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      return "Bearer" + " " + token;
+    } catch (err) {
+      localStorage.clear();
+    }
+  }
+
+  // ? เซต Header ตอนอัพรูป
+  const imagesUploadHandler = (blobInfo, success, failure) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:4000/api/post-texteditor/uploadsimages");
+    xhr.setRequestHeader("Authorization", getToken()); // manually set header
+
+    xhr.onload = function () {
+      if (xhr.status !== 200) {
+        failure("HTTP Error: " + xhr.status);
+        return;
+      }
+
+      let json = JSON.parse(xhr.responseText);
+
+      if (!json || typeof json.location !== "string") {
+        failure("Invalid JSON: " + xhr.responseText);
+        return;
+      }
+
+      success(json.location);
+    };
+
+    let formData = new FormData();
+    formData.append("file", blobInfo.blob(), blobInfo.filename());
+
+    xhr.send(formData);
   };
-
-  // const isValidation = async () => {
-  //   const { title, post } = postDetail;
-
-  //   if (title && post) {
-  //     const formData = new FormData();
-  //     formData.append("title", title);
-  //     formData.append("post", post);
-  //     formData.append("created_by", userLogin());
-
-  //     // ? Loop send Image
-  //     if (showImages.length !== 0) {
-  //       for (let index = 0; index < showImages.length; index++) {
-  //         formData.append("post_image_" + index, showImages[index].file);
-  //       }
-  //     }
-
-  //     let result = await httpClient.post(server.CREATE_POST_URL, formData);
-  //   }
-  // };
 
   return (
     <div className="container-fluid">
@@ -64,9 +71,6 @@ function EditTextEditor() {
         <div style={{ paddingBottom: "15px" }}>
           <label htmlFor="exampleFormControlInput1" className="form-label">
             <b>Title Post:</b>
-            {/* {console.log(postDetail)} */}
-            {console.log(showImages)}
-            {console.log(dataArrary)}
           </label>
           <input
             type="text"
@@ -96,19 +100,18 @@ function EditTextEditor() {
             image_title: false,
             automatic_uploads: true,
             images_reuse_filename: true,
-            images_upload_url:
-              "http://localhost:4000/api/post-texteditor/uploadsimages",
+            // mages_upload_handler: example_image_upload_handler
+            // images_upload_url:
+            //   "http://localhost:4000/api/post-texteditor/uploadsimages",
             file_picker_types: "image",
+
             file_picker_callback: function (cb, value, meta) {
               let input = document.createElement("input");
               input.setAttribute("type", "file");
               input.setAttribute("accept", "image/*");
               input.onchange = function (dialogApi, details) {
-                
-                  let file = this.files[0];
-                  cb(URL.createObjectURL(file), { title: file.name });
-                  
-                
+                let file = this.files[0];
+                cb(URL.createObjectURL(file), { title: file.name });
               };
 
               input.click();
@@ -129,4 +132,4 @@ function EditTextEditor() {
   );
 }
 
-export default  EditTextEditor;
+export default EditTextEditor;

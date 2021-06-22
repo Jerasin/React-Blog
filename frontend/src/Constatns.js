@@ -11,6 +11,7 @@ export const server = {
   CREATE_POST_TEXTEDITOR_URL: "/post-texteditor/post",
   GET_POST_TEXTEDITOR_URL: "/post-texteditor/post",
   UPLOADIMAGES_POST_TEXTEDITOR_URL: "/post-texteditor/uploadsimages",
+  GET_CATEGORY_URL: "/category",
   TEST_API_URL: "/post/create-post-test",
 };
 

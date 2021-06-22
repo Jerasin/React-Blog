@@ -28,24 +28,29 @@ function App() {
     return <Redirect to="/login" />;
   };
 
+  let token;
+
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const isLogin = () => {
     try {
-      let token = localStorage.getItem("localID");
-      if (!token) return;
+      token = localStorage.getItem("localID");
+      if (!token) return ;
       let decoded = jwt_decode(token);
       return decoded;
     } catch (err) {
       localStorage.clear();
     }
   };
+  
 
   return (
     <AuthContextProvider forceUpdate={forceUpdate}>
       <Router>
         {isLogin() && <Herader />}
+
+
         {/* {isLogin() && <Sidebar/>} */}
         <Switch>
           <PubilcRoute path="/login">
