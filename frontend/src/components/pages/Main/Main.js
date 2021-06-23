@@ -9,17 +9,20 @@ import "./Main.css";
 function Main() {
   let token;
   let location = useLocation();
+  let history = useHistory();
   const [data, setData] = useState(null);
 
-  // useEffect(async () => {
-  //   try {
-  //     let result = await httpClient.get(server.GET_POST_TEXTEDITOR_URL);
-  //     setData(result);
-  //   } catch (err) {
-  //     localStorage.clear();
-  //     forceUpdate();
-  //   }
-  // }, []);
+  useEffect(async () => {
+    try {
+      let result = await httpClient.get(server.GET_POST_TEXTEDITOR_URL);
+      // console.log(result.data.result);
+      setData(result.data.result);
+    } catch (err) {
+      console.log(err);
+      // localStorage.clear();
+      // forceUpdate();
+    }
+  }, []);
 
   const checkLogin = () => {
     try {
@@ -41,20 +44,29 @@ function Main() {
     localStorage.setItem("LOCAL_ID", cookieArr);
   };
 
-  const postList = (result) => {
-    if (data === null) return;
-    // console.log(data.data.result);
-    return data.data.result.map((data) => {
-      let text = JSON.parse(data.posts);
-      console.log(typeof data.posts);
-      console.log(typeof text);
+  const postList = () => {
+    if (!data) return;
 
+    return data.map((data) => {
       return (
-        <div
-          key={data.id}
-          className="container-fluid"
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
+        <div key={data.id}>
+          <div className="card" style={{ width: "18rem" }}>
+            {/* <img src="..." className="card-img-top" alt="..." /> */}
+            <div className="card-body">
+              <h5 className="card-title">{data.title}</h5>
+              <p className="card-text">Category: {data.laguange}</p>
+              <p className="card-text">Post by: {data.email}</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  history.push(`/edit-text-editor/${data.id}`);
+                }}
+              >
+                Go somewhere
+              </button>
+            </div>
+          </div>
+        </div>
       );
     });
   };
@@ -69,20 +81,13 @@ function Main() {
         <div className="carousel-inner ">
           <div className="carousel-item active ">
             <img
-              className="header_main"
-              style={{height:"100%" , maxHeight:"640px"}}
+              // style={{ height: "100%", maxHeight: "640px" }}
               src={`${process.env.PUBLIC_URL}/Images/header_main.jpg`}
-              className="d-block w-100"
+              className="d-block w-100 header_main"
               alt="..."
             />
             <h4 className="header_main_text">Welcome To TechBlog</h4>
           </div>
-          {/* <div className="carousel-item">
-            <img src="..." className="d-block w-100" alt="..." />
-          </div>
-          <div className="carousel-item">
-            <img src="..." className="d-block w-100" alt="..." />
-          </div> */}
         </div>
       </div>
 

@@ -207,6 +207,7 @@ router.get("/user/:id", authorization, (req, res, next) => {
 
 // Login
 router.post("/login", (req, res) => {
+  console.log(req.body)
   try {
     const { email, password } = req.body;
     let sql = "SELECT * FROM users WHERE email = ?";

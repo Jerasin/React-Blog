@@ -1,1 +1,1 @@
-npm i express cors mysql fs nodemon dotenv bcryptjs express-jwt formidable jsonwebtoken fs-extra passport-facebook passport express-session passport-google-oauth20
+npm i express cors mysql fs nodemon dotenv bcryptjs express-jwt formidable jsonwebtoken fs-extra passport-facebook passport express-session passport-google-oauth20 morgan

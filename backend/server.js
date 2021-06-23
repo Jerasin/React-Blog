@@ -1,40 +1,29 @@
-const express = require("express");
-const port = 4000;
+const express = require("./config/express");
 const app = express();
-const cors = require("cors");
+
 const mysql = require("mysql");
 const passport = require("passport");
-const session = require("express-session")
+const session = require("express-session");
 
-// app.use(function (req, res , next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin , X-Requested-With, Content-Type , Accept")
-//   next();
-// })
-app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname + "/upload"));
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-
-
-app.use(session({ secret: 'anything' }));
+app.use(session({ secret: "anything" }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-//  Open  Code Connect DB 
+//  Open  Code Connect DB
 const dbConfig = require("./config/config");
 
 console.log(dbConfig);
 const db = mysql.createConnection(dbConfig);
 
 db.connect((err, database) => {
+  const express = require("./config/express");
+  const port = process.env.PORT;
+  process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+  const app = express();
+
   if (err) return console.log(err);
   console.log("Database is Running");
-  // Open Code Route 
+  // Open Code Route
   const user_api = require("./routes/api_user");
   app.use("/api/authen", user_api);
 
@@ -49,13 +38,13 @@ db.connect((err, database) => {
 
   const facebook_api = require("./authentication/authorize-facebook");
   app.use("/api/facebook", facebook_api);
-  
+
   const google_api = require("./authentication/authorize-google");
   app.use("/api/google", google_api);
-  //  Close Code Route 
+  //  Close Code Route
 
   app.listen(port, () => {
-    console.log("Server Running Port" + " " + port);
+    console.log("Server Running Port:" + " " + port + " , " + "Environment:" + " " +process.env.NODE_ENV);
   });
 });
 

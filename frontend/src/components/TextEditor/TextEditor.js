@@ -9,6 +9,7 @@ import jwt_decode from "jwt-decode";
 import { useHistory, useLocation } from "react-router-dom";
 import {
   server,
+  apiUrl,
   CREATE_POST_TEXTEDITOR_URL,
   UPLOADIMAGES_POST_TEXTEDITOR_URL,
 } from "../../Constatns";
@@ -51,7 +52,7 @@ function TextEditor(props) {
     // ? XMLHttpRequest (XHR) เป็น Api ที่สามารถเรียกใช้ได้จาก จาวาสคริปต์ เจสคริปต์ วีบีสคริปต์ และภาษาสคริปต์อื่นๆ ในการแลกเปลี่ยน และปรับรูปแบบ XML จากเว็บเซิร์ฟเวอร์ โดยใช้ HTTP ซึ่งสร้างการเชื่อมต่อระหว่างเว็บเบราว์เซอร์ (Client-Side) กับ เว็บเซิร์ฟเวอร์ (Server-Side)
 
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:4000/api/post-texteditor/uploadsimages");
+    xhr.open("POST", apiUrl + server.UPLOADIMAGES_POST_TEXTEDITOR_URL);
     xhr.setRequestHeader("Authorization", getToken()); // manually set header
 
     xhr.onload = function () {
@@ -74,7 +75,7 @@ function TextEditor(props) {
 
       success(json.location);
     };
- console.log(blobInfo.filename())
+ 
     let formData = new FormData();
     formData.append("file", blobInfo.blob(), blobInfo.filename());
 
@@ -88,13 +89,13 @@ function TextEditor(props) {
         post: editorRef.current.getContent(),
         user_created: getShortId(),
       }
-      setUploadImg(true)
       let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL,data);
       if(result.data.status === 200) {
         forceUpdate();
         return history.push('/main')
       }
-      alert(result.data.status);
+      alert(result.data);
+      console.log(result.data)
     }
   };
 
@@ -171,7 +172,6 @@ function TextEditor(props) {
             }}
           />
           <div className="container-btn-post">
-            {console.log(uploadImg)}
             <div className="btn_addpost">
               <button
                 className="btn btn-primary"

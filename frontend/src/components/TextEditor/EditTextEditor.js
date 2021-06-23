@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState , useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { httpClient } from "../../utils/HttpClient";
+import { useHistory, useLocation , useParams } from "react-router-dom";
 import {
   server,
   CREATE_POST_TEXTEDITOR_URL,
@@ -15,6 +16,17 @@ function EditTextEditor() {
     post: null,
   });
   let dataArrary = [];
+  let { id } = useParams();
+  let history = useHistory();
+
+  useEffect(() => {
+    try{
+
+    }
+    catch(err){
+      console.log(err)
+    }
+  }, [])
 
   const log = async () => {
     if (editorRef.current) {
@@ -69,6 +81,7 @@ function EditTextEditor() {
       <h1 style={{ paddingTop: "15px", paddingBottom: "15px" }}>Create Post</h1>
       <div className="container-xl ">
         <div style={{ paddingBottom: "15px" }}>
+          {console.log(id)}
           <label htmlFor="exampleFormControlInput1" className="form-label">
             <b>Title Post:</b>
           </label>
