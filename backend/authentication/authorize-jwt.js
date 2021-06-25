@@ -28,7 +28,7 @@ const authorization = ((req, res, next) => {
     
     // ทำการยืนยันความถูกต้องของ token
     jwt.verify(token, process.env.JWT_SECRET, function(error, decoded) {
-        if(error) return res.json({ // หาก error ไม่ผ่าน
+        if(error) return res.status(401).json({ // หาก error ไม่ผ่าน
             "status": 401,
             "message": "Unauthorized JWT",
             "LogError": error,

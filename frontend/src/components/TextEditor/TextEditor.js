@@ -25,7 +25,7 @@ function TextEditor(props) {
     category: "Select",
   });
   const { forceUpdate } = useContext(AuthContext);
-  const [uploadImg, setUploadImg] = useState(false)
+  const [uploadImg, setUploadImg] = useState(false);
 
   const getShortId = () => {
     try {
@@ -75,7 +75,7 @@ function TextEditor(props) {
 
       success(json.location);
     };
- 
+
     let formData = new FormData();
     formData.append("file", blobInfo.blob(), blobInfo.filename());
 
@@ -84,23 +84,27 @@ function TextEditor(props) {
 
   const log = async () => {
     if (editorRef.current) {
-      let data =  { ...postDetail,
+      let data = {
+        ...postDetail,
         title: postDetail.title,
         post: editorRef.current.getContent(),
         user_created: getShortId(),
-      }
-      let result = await httpClient.post(server.CREATE_POST_TEXTEDITOR_URL,data);
-      if(result.data.status === 200) {
+      };
+      let result = await httpClient.post(
+        server.CREATE_POST_TEXTEDITOR_URL,
+        data
+      );
+      if (result.data.status === 200) {
         forceUpdate();
-        return history.push('/main')
+        return history.push("/main");
       }
       alert(result.data);
-      console.log(result.data)
+      console.log(result.data);
     }
   };
 
   const setCategory = (categoryId) => {
-    setPostDetail({ ...postDetail , category: categoryId });
+    setPostDetail({ ...postDetail, category: categoryId });
   };
 
   return (
@@ -109,13 +113,17 @@ function TextEditor(props) {
 
       <div className="gird-container">
         {/* Detailbar Left */}
-        <div className="side">
+        <div className="detail">
           <Detailbar getcategory={setCategory} />
         </div>
 
         {/* Main Create Post */}
         <div className="container-xl container-texteditor">
           <div className="" style={{ paddingBottom: "15px" }}>
+          <div className="detail-lek">
+              <Detailbar />
+            </div>
+
             <label htmlFor="exampleFormControlInput1" className="form-label">
               <b>Title Post:</b>
             </label>
@@ -195,9 +203,9 @@ function TextEditor(props) {
         </div>
 
         {/* Sidebar Right */}
-        <div className="side">
+        {/* <div className="side">
           <Sidebar />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -3,18 +3,38 @@
   max-width: 600px;
 }
 
-.gird-container{
-    display:grid;
-    grid-template-columns: 1fr 2fr 1fr;
+.detail-lek{
+    display: none;
 }
 
-@media only screen and (max-width:950px) {
+.gird-container{
+    display:grid;
+    grid-template-columns: 2fr 5fr ;
+}
+
+.side , .detail {
+    align-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+@media only screen and (max-width:978px) {
     .gird-container{
         display:grid;
         grid-template-columns: 1fr;
     }
 
+    .detail-lek{
+        display: block;
+    }
+    
+
     .side{
+        display: none;
+    }
+
+    .detail{
         display: none;
     }
 }

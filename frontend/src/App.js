@@ -2,6 +2,7 @@ import React, { Children, useState, useCallback } from "react";
 import "./App.css";
 import jwt_decode from "jwt-decode";
 import Login from "./components/pages/Login/Login";
+import Post from './components/pages/Post/Post'
 import Register from "./components/pages/Register/Register";
 import Sidebar from './components/fragments/Sidebar/Sidebar'
 import Herader from "./components/fragments/Header/Herader";
@@ -63,6 +64,10 @@ function App() {
 
           <PrivateRoute path="/main">
             <Main />
+          </PrivateRoute>
+
+          <PrivateRoute path="/post/:id">
+            <Post />
           </PrivateRoute>
 
           <PrivateRoute path="/create-post">

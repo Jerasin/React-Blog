@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import { GET_POST_TEXTEDITOR_URL, server } from "./../../../Constatns";
 import Post from "../Post/Post";
 import "./Main.css";
+
 function Main() {
   let token;
   let location = useLocation();
@@ -15,12 +16,12 @@ function Main() {
   useEffect(async () => {
     try {
       let result = await httpClient.get(server.GET_POST_TEXTEDITOR_URL);
-      // console.log(result.data.result);
+      console.log(result);
       setData(result.data.result);
     } catch (err) {
-      console.log(err);
-      // localStorage.clear();
-      // forceUpdate();
+      // console.log(err);
+      localStorage.clear();
+      forceUpdate();
     }
   }, []);
 
@@ -59,10 +60,10 @@ function Main() {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  history.push(`/edit-text-editor/${data.id}`);
+                  history.push(`/post/${data.id}`);
                 }}
               >
-                Go somewhere
+                Go To Blog
               </button>
             </div>
           </div>

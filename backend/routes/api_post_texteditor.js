@@ -26,7 +26,6 @@ router.post("/uploadsimages", authorization, (req, res) => {
     let form = new formidable.IncomingForm();
     form.parse(req, async (error, fields, files) => {
       if (error) return res.json({ status: 404, result: error });
-      
 
       for (const property in files) {
         let fileExtention = `${files[property].name}`.split(".")[1];
@@ -46,7 +45,7 @@ router.post("/uploadsimages", authorization, (req, res) => {
 
         await fs.moveSync(files[property].path, newpath);
         miniId++;
-console.log(newpath)
+        console.log(newpath);
         return res.json({ location: pathimg });
       }
     });
@@ -58,7 +57,7 @@ console.log(newpath)
 router.post("/post", authorization, async (req, res) => {
   try {
     let regularSrc = /src\s*=\s*"(.+?)"/g;
-    let checkSrcNumber = /([0-9])\w+/g
+    let checkSrcNumber = /([0-9])\w+/g;
     let str = req.body.post;
     let resultRegular;
     let list = [];
@@ -69,9 +68,9 @@ router.post("/post", authorization, async (req, res) => {
     }
 
     // ? Check Format Img
-    checkFormatNumber = checkSrcNumber.test(list)
-    console.log(list)
-    console.log(checkFormatNumber)
+    checkFormatNumber = checkSrcNumber.test(list);
+    console.log(list);
+    console.log(checkFormatNumber);
 
     // ? เทียบ 2 Arrary เอาค่าทีี่ไม่ซ้ำไปสร้าง Arrary ใหม่
     let result = _.difference(running_Image_Id, list);
@@ -123,11 +122,9 @@ router.post("/post", authorization, async (req, res) => {
   }
 });
 
-
 // ? Get All Posts
 router.get("/post", authorization, (req, res) => {
   try {
-    let limit = 1;
     let sql =
       " SELECT p.id  , p.title  , c.laguange , u.email , p.created_at FROM master_blog.posts_texteditor AS p LEFT JOIN category AS c ON  p.category_id = c.id LEFT JOIN users AS u ON  p.user_created =  u.short_id limit 10 ";
     db.query(sql, (error, fields, files) => {
@@ -140,8 +137,20 @@ router.get("/post", authorization, (req, res) => {
 });
 
 // ? Get Post By id
-router.get("/post/:id", authorization, (req, res)=>{
+router.get("/post/:id", authorization, (req, res) => {
+  try {
+    let {id} = req.params
+    let sql = " SELECT p.id , p.title , p.posts , u.email , c.laguange , p.created_at FROM posts_texteditor AS p LEFT JOIN users AS u ON p.user_created =  u.short_id LEFT JOIN category AS c ON category_id = c.id WHERE p.id = ?";
+    let testsql = mysql.format(sql, id);
+    console.log(testsql);
 
-})
+    db.query(sql,id,(error, fields, files)=>{
+      if (error) return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: fields})
+    })
+  } catch (error) {
+    res.json({ status: 500, result: error });
+  }
+});
 
 module.exports = router;

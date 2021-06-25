@@ -21,7 +21,7 @@ function EditTextEditor() {
 
   useEffect(() => {
     try{
-
+      httpClient.get()
     }
     catch(err){
       console.log(err)

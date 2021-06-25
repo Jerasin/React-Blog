@@ -32,7 +32,7 @@ function Detailbar(props) {
   const onSelect = (event) => {
     const selectedIndex = event.target.options.selectedIndex;
     console.log(selectedIndex);
-    return selectedIndex
+    return selectedIndex;
   };
 
   const categoryList = () => {
@@ -46,49 +46,51 @@ function Detailbar(props) {
   };
 
   return (
-    <div className="container side-bar">
-      <div className="header-sidebar">
-        <h3>Detail</h3>
-      </div>
+    <div className="container-fluid">
+      <div className="side-detailbar">
+        <div className="header-detailbar">
+          <h3>Detail</h3>
+        </div>
 
-      <div className="container">
-        <form>
-          <div className="mb-3">
-            <label htmlFor="exampleInputEmail1" className="form-label">
-              Create Date
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              value={dateNow()}
-              disabled={true}
-            />
-          </div>
+        <div className="container">
+          <form>
+            <div className="mb-3">
+              <label htmlFor="exampleInputEmail1" className="form-label">
+                Create Date
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                value={dateNow()}
+                disabled={true}
+              />
+            </div>
 
-          <div className="mb-3">
-            <label htmlFor="exampleInputEmail1" className="form-label">
-              Select Category
-            </label>
-            <br />
-            <select
-              className="form-select"
-              id="category_list"
-              value={sendCate}
-              onChange={(e) => {
-                e.preventDefault();
-                setSendCate(e.target.value);
-                let datalist = { category: e.target.value };
-                let category_id = onSelect(e);
-                props.getcategory(category_id);
-              }}
-            >
-              <option value="select">Select</option>
-              {categoryList()}
-            </select>
-          </div>
-        </form>
+            <div className="mb-3">
+              <label htmlFor="exampleInputEmail1" className="form-label">
+                Select Category
+              </label>
+              <br />
+              <select
+                className="form-select"
+                id="category_list"
+                value={sendCate}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSendCate(e.target.value);
+                  let datalist = { category: e.target.value };
+                  let category_id = onSelect(e);
+                  props.getcategory(category_id);
+                }}
+              >
+                <option value="select">Select</option>
+                {categoryList()}
+              </select>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
