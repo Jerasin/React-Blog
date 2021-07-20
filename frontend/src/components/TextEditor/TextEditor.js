@@ -83,6 +83,7 @@ function TextEditor(props) {
   };
 
   const log = async () => {
+    if(postDetail.category === "Select") return alert("Please Select Category");
     if (editorRef.current) {
       let data = {
         ...postDetail,
@@ -121,7 +122,7 @@ function TextEditor(props) {
         <div className="container-xl container-texteditor">
           <div className="" style={{ paddingBottom: "15px" }}>
           <div className="detail-lek">
-              <Detailbar />
+              <Detailbar getcategory={setCategory}/>
             </div>
 
             <label htmlFor="exampleFormControlInput1" className="form-label">

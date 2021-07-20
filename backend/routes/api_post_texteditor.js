@@ -55,6 +55,7 @@ router.post("/uploadsimages", authorization, (req, res) => {
 });
 
 router.post("/post", authorization, async (req, res) => {
+  console.log(req.body)
   try {
     let regularSrc = /src\s*=\s*"(.+?)"/g;
     let checkSrcNumber = /([0-9])\w+/g;
@@ -93,7 +94,7 @@ router.post("/post", authorization, async (req, res) => {
       user_created: user_created,
       category_id: category,
     };
-
+    console.log(category);
     let sql = "INSERT INTO posts_texteditor SET ? ";
 
     // ? Test Query
@@ -109,6 +110,7 @@ router.post("/post", authorization, async (req, res) => {
 
     db.query(sql, data, (error, fields, files) => {
       if (error) {
+        console.log(error);
         res.json({ status: 404, result: error });
         return;
       }

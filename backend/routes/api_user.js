@@ -97,6 +97,7 @@ router.post("/register_fb", (req, res) => {
 // Register
 router.post("/register", (req, res, next) => {
   try {
+    console.log(req.body);
     const { email, password, user_role } = req.body;
     // Check Pattrn Email
     let regularEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
@@ -124,11 +125,11 @@ router.post("/register", (req, res, next) => {
         password: password,
         user_role: user_role,
         short_id: autoGen_shortID(),
-      }; 
+      };
       bcrypt.hash(user.password, 8, (err, hash) => {
         user.password = hash;
-        let sql = " INSERT INTO users SET ? ";
-        db.query(sql, user, (error, results, fields) => {
+        let sql_insert = " INSERT INTO users SET ? ";
+        db.query(sql_insert, user, (error, results, fields) => {
           // เกิด error ในคำสั่ง sql
           if (error)
             return res.json({
@@ -207,7 +208,7 @@ router.get("/user/:id", authorization, (req, res, next) => {
 
 // Login
 router.post("/login", (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const { email, password } = req.body;
     let sql = "SELECT * FROM users WHERE email = ?";

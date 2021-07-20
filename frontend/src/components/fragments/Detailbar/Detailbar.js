@@ -3,7 +3,7 @@ import { httpClient } from "../../../utils/HttpClient";
 import "./Detailbar.css";
 import { GET_CATEGORY_URL, server } from "../../../Constatns";
 
-function Detailbar(props) {
+function Detailbar({getcategory}) {
   const [categoryData, setCategoryData] = useState([]);
   const [sendCate, setSendCate] = useState("select");
   const [category_id, setCategory_id] = useState(null);
@@ -31,7 +31,7 @@ function Detailbar(props) {
 
   const onSelect = (event) => {
     const selectedIndex = event.target.options.selectedIndex;
-    console.log(selectedIndex);
+    // console.log(selectedIndex);
     return selectedIndex;
   };
 
@@ -76,13 +76,15 @@ function Detailbar(props) {
               <select
                 className="form-select"
                 id="category_list"
+                required
                 value={sendCate}
                 onChange={(e) => {
                   e.preventDefault();
                   setSendCate(e.target.value);
                   let datalist = { category: e.target.value };
                   let category_id = onSelect(e);
-                  props.getcategory(category_id);
+                  console.log(category_id)
+                  getcategory(category_id);
                 }}
               >
                 <option value="select">Select</option>

@@ -9,6 +9,7 @@ const autoGen_shortID = () => {
   let str = "" + shortID;
   let pad = "000000";
   let shortID_NOW = pad.substring(0, pad.length - str.length) + str;
+  console.log(typeof(shortID_NOW))
   return shortID_NOW;
 };
 
