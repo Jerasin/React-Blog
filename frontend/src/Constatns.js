@@ -9,10 +9,14 @@ export const server = {
   GOOGLE_LOGIN: "/google/authen/google",
   CREATE_POST_URL: "/post/create-post",
   CREATE_POST_TEXTEDITOR_URL: "/post-texteditor/post",
-  GET_POST_TEXTEDITOR_URL: "/post-texteditor/post",
-  GET_POSTBYIDS_TEXTEDITOR_URL: "/post-texteditor/post",
+  GET_POST_TEXTEDITOR_URL: "/post-texteditor/posts",
+  GET_POSTBYEMAIL_TEXTEDITOR_URL: "/post-texteditor/post-email",
+  GET_POSTBYID_TEXTEDITOR_URL: "/post-texteditor/post-id",
   UPLOADIMAGES_POST_TEXTEDITOR_URL: "/post-texteditor/uploadsimages",
   GET_CATEGORY_URL: "/category",
+  CREATED_CATEGORY_URL: "/category",
+  UPDATE_POSTBYID_TEXTEDITOR_URL: "/post-texteditor/post",
+  DELETE_POSTBYID_TEXTEDITOR_URL: "/post-texteditor/post",
   TEST_API_URL: "/post/create-post-test",
 };
 

@@ -83,7 +83,8 @@ function TextEditor(props) {
   };
 
   const log = async () => {
-    if(postDetail.category === "Select") return alert("Please Select Category");
+    if (postDetail.category === "Select")
+      return alert("Please Select Category");
     if (editorRef.current) {
       let data = {
         ...postDetail,
@@ -91,16 +92,23 @@ function TextEditor(props) {
         post: editorRef.current.getContent(),
         user_created: getShortId(),
       };
-      let result = await httpClient.post(
-        server.CREATE_POST_TEXTEDITOR_URL,
-        data
-      );
-      if (result.data.status === 200) {
+      try {
+        let result = await httpClient.post(
+          server.CREATE_POST_TEXTEDITOR_URL,
+          data
+        );
+        if (result.data.status === 200) {
+          forceUpdate();
+          return history.push("/main");
+        }
+        if (result.data.status === 404) {
+          console.log(result.data.result.sqlMessage);
+          return alert("Error Input is Editor can't use Icon");
+        }
+      } catch (err) {
+        localStorage.clear();
         forceUpdate();
-        return history.push("/main");
       }
-      alert(result.data);
-      console.log(result.data);
     }
   };
 
@@ -110,103 +118,110 @@ function TextEditor(props) {
 
   return (
     <div className="container-fluid">
-      <h3 style={{ paddingTop: "15px", paddingBottom: "15px" }}>Create Post</h3>
-
-      <div className="gird-container">
-        {/* Detailbar Left */}
-        <div className="detail">
+      <div className="row justify-content-center mt-5">
+        <div className="col col-auto col-md-4 mb-3">
           <Detailbar getcategory={setCategory} />
         </div>
-
-        {/* Main Create Post */}
-        <div className="container-xl container-texteditor">
-          <div className="" style={{ paddingBottom: "15px" }}>
-          <div className="detail-lek">
-              <Detailbar getcategory={setCategory}/>
-            </div>
-
+        <div className="col p-0 m-0 col-auto col-md-8">
+          <div className="container-fluid">
             <label htmlFor="exampleFormControlInput1" className="form-label">
               <b>Title Post:</b>
             </label>
+
             <input
               type="text"
-              className="form-control"
+              className="form-control mb-3"
               id="title-post"
               placeholder=""
               onChange={(e) => {
                 setPostDetail({ ...postDetail, title: e.target.value });
               }}
             />
-          </div>
-          <Editor
-            onInit={(evt, editor) => (editorRef.current = editor)}
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table paste code help wordcount",
-              ],
-              toolbar:
-                "undo redo | formatselect | " +
-                "bold italic backcolor link image | alignleft aligncenter " +
-                "alignright alignjustify | bullist numlist outdent indent | " +
-                "removeformat | help",
-              image_title: false,
-              automatic_uploads: true,
-              images_reuse_filename: true,
 
-              // ? ส่งรูปไปยัง server แบบไม่มี token
-              // images_upload_url:
-              //   "http://localhost:4000/api/post-texteditor/uploadsimages",
+            <Editor
+              onInit={(evt, editor) => (editorRef.current = editor)}
+              init={{
+                min_height: 500,
+                menubar: false,
+                statusbar: false,
+                object_resizing: "img",
+                resize_img_proportional: true,
+                emoticons_database: "emojis",
+                plugins: [
+                  "autoresize advlist autolink emoticons lists link image charmap print preview anchor",
+                  "searchreplace visualblocks code fullscreen",
+                  "insertdatetime media table paste code help ",
+                ],
+                toolbar:
+                  "undo redo  | formatselect | " +
+                  "bold italic backcolor link image emoticons | alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent | " +
+                  "removeformat | help",
+                image_title: false,
+                automatic_uploads: true,
+                images_reuse_filename: true,
+                image_dimensions: false,
+                // ? ใส่ชื่อ class ที่ Tag img
+                image_class_list: [
+                  { title: "Responsive", value: "img-fluid p-3" },
+                ],
 
-              // ? ส่งรูปไปยัง server แบบมี token
-              images_upload_handler: imagesUploadHandler,
+                // ? ส่งรูปไปยัง server แบบไม่มี token
+                // images_upload_url:
+                //   "http://localhost:4000/api/post-texteditor/uploadsimages",
 
-              file_picker_types: "image",
-              file_picker_callback: function (cb, value, meta) {
-                let input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-                input.onchange = function (dialogApi, details) {
-                  let file = this.files[0];
-                  cb(URL.createObjectURL(file), { title: file.name });
-                };
+                // ? ส่งรูปไปยัง server แบบมี token
+                images_upload_handler: imagesUploadHandler,
 
-                input.click();
-              },
-              content_style:
-                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-            }}
-          />
-          <div className="container-btn-post">
-            <div className="btn_addpost">
-              <button
-                className="btn btn-primary"
-                onClick={log}
-                style={{ marginBottom: "5px" }}
-              >
-                Add Post
-              </button>
-              <button
-                className="btn btn-danger"
-                onClick={() => {
-                  // history.goBack()
-                  history.goBack();
-                }}
-                style={{ marginBottom: "30px" }}
-              >
-                Back
-              </button>
+                file_picker_types: "image",
+                file_picker_callback: function (cb, value, meta) {
+                  let input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.setAttribute("accept", "image/*");
+                  input.onchange = function (dialogApi, details) {
+                    let file = this.files[0];
+                    console.log(file);
+                    if (file != null) {
+                      cb(URL.createObjectURL(file), { title: file.name });
+                    }
+                  };
+
+                  input.click();
+                },
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+              }}
+            />
+
+            <div className="row p-0 m-0 mt-3 justify-content-end">
+              <div className="row p-0 m-0 ">
+                <div className="col p-0">
+                  <div className="col col-auto  col-lg-2  p-0">
+                    <button
+                      className="btn btn-primary w-100"
+                      onClick={log}
+                      style={{ marginBottom: "5px" }}
+                    >
+                      Add Post
+                    </button>
+                  </div>
+                  <div className="col col-auto  col-lg-2 p-0 ">
+                    <button
+                      className="btn btn-danger w-100"
+                      onClick={() => {
+                        // history.goBack()
+                        history.push("/main");
+                      }}
+                      style={{ marginBottom: "30px" }}
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Sidebar Right */}
-        {/* <div className="side">
-          <Sidebar />
-        </div> */}
       </div>
     </div>
   );

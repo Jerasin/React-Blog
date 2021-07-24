@@ -5,4 +5,5 @@ module.exports = {
   password: "Jc@123456",
   database: "master_blog",
   insecureAuth: true,
+  charset : 'utf8mb4'
 };

@@ -7,7 +7,7 @@ import { GET_POST_TEXTEDITOR_URL, server } from "./../../../Constatns";
 import Post from "../Post/Post";
 import "./Main.css";
 
-function Main() {
+function Main(props) {
   let token;
   let location = useLocation();
   let history = useHistory();
@@ -21,7 +21,6 @@ function Main() {
     } catch (err) {
       // console.log(err);
       localStorage.clear();
-      forceUpdate();
     }
   }, []);
 
@@ -50,7 +49,7 @@ function Main() {
 
     return data.map((data) => {
       return (
-        <div key={data.id}>
+        <div className="col col-auto p-0 ms-3 mb-3" key={data.id}>
           <div className="card" style={{ width: "18rem" }}>
             {/* <img src="..." className="card-img-top" alt="..." /> */}
             <div className="card-body">
@@ -58,7 +57,7 @@ function Main() {
               <p className="card-text">Category: {data.laguange}</p>
               <p className="card-text">Post by: {data.email}</p>
               <button
-                className="btn btn-primary"
+                className="btn btn-primary w-100"
                 onClick={() => {
                   history.push(`/post/${data.id}`);
                 }}
@@ -70,31 +69,32 @@ function Main() {
         </div>
       );
     });
+ 
   };
 
   return (
-    <div>
-      <div
-        id="carouselExampleSlidesOnly"
-        className="carousel slide container_main"
-        data-bs-ride="carousel"
-      >
-        <div className="carousel-inner ">
-          <div className="carousel-item active ">
+    <div className="container-fluid p-0">
+      <div className="row m-0">
+        <div className="col col-12 p-0">
+          <div className="container-fluid p-0 position-relative">
             <img
               // style={{ height: "100%", maxHeight: "640px" }}
               src={`${process.env.PUBLIC_URL}/Images/header_main.jpg`}
-              className="d-block w-100 header_main"
+              style={{ height: "100%", maxHeight: "400px", width: "100%" }}
               alt="..."
             />
-            <h4 className="header_main_text">Welcome To TechBlog</h4>
+            <div className="position-absolute top-50 start-50 translate-middle">
+              <p className=" text-center m-2">
+                <b className="fs-1">Welcome To TechBlog</b>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="container-fluid ">
-        <div className="grid-container">
-          <div className="grid-postlist">{postList()}</div>
+        <div className="col mt-3  p-0">
+          <div className="container">
+          <div className="row m-0">{postList()}</div>
+          </div>
         </div>
       </div>
     </div>

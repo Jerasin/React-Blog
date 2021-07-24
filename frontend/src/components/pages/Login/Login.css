@@ -1,140 +1,23 @@
-.form{
-  margin-top: 100px;
-  background-color:#fff;
-  padding:15px;
-}
-.popup-box {
-  position: fixed;
-  background: #00000050;
-  width: 100%;
+.container-login {
   height: 100%;
+  align-content: center;
+}
+
+.metro {
+  width: 100%;
+}
+
+.container-card-login {
+  /* Start Set Position Center on Page */
+  position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
-}
+  right: 0;
+  margin: auto;
+  /* End Set Position Center on Page */
 
-.box {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 70%;
-  max-width: 500px;
-  margin: 0 auto;
-  height: auto;
-  max-height: 230px;
-  margin-top: 210px;
-  background: #fff;
-  border-radius: 0.3rem;
-  padding: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  overflow: auto;
+  height: 510px;
+  width: 350px;
+  background-color: rgba(0, 127, 253, 0.5);
 }
-
-button {
-  font-size: inherit;
-}
-
-i {
-  margin: 0px;
-}
-
-.box-content {
-  margin: 0px;
-  padding: 16px;
-  border-bottom: 1px solid #dee2e6;
-}
-
-h5 {
-  font-size: 1.25rem;
-  margin: 0px;
-  width: 100%;
-}
-
-p {
-  display: block;
-}
-
-.box-body {
-  position: relative;
-  margin: 0px;
-  padding: 1rem;
-}
-
-.container-btn {
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid #dee2e6;
-}
-
-.btn_close {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 5px;
-  max-width: 64px;
-  width: 100%;
-}
-
-.login_social {
-  width: 100%;
-  height: 100%;
-  max-width: 250px;
-  max-height: 150px;
-}
-
-.fa-facebook {
-  height: 40px;
-  width: 38px;
-}
-
-.text-social {
-  padding-bottom: 10px;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.icon-container {
-  padding-top: 10px;
-  display: inline-grid;
-  grid-template-columns: auto auto auto;
-  justify-content: center;
-}
-
-.icon-fb {
-  padding: 2px;
-  padding-top: 10px;
-  padding-right: 10px;
-}
-
-.icon-go {
-  padding: 2px;
-  text-align: center;
-  width: 40px;
-  padding-top: 10px;
-  padding-left: 10px;
-}
-
-.container-fb{
-  width: 100%;
-  max-width: 248px;
-  padding: 4px;
-  max-height: 38px;
-  margin-bottom: 10px;
-}
-
-.my-facebook-button-class{
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 248px;
-  padding: 6px 12px;
-  max-height: 38px;
- 
-}
-
-.metro{
-  max-width: 248px;
-  max-height: 38px;
-}
-
-.btn_canceled {
-  padding: 4px;
-}
-

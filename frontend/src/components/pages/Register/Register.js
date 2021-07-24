@@ -48,7 +48,7 @@ export default function Register() {
     }
 
     let result = await httpClient.post(server.REGISTER_URL, authen);
-    console.log(result)
+    console.log(result);
     if (result.data.status === 404) {
       // ? this i make Warning popup.
       // setOpenPopup(true);
@@ -128,70 +128,70 @@ export default function Register() {
   const { email, password, user_role } = authen;
 
   return (
-    <div className="container-fluid">
-      <div className="container">
+    <div className="container container-register">
+      <div className="d-flex justify-content-center h-100">
         {isPopup()}
-        <div className="container-sm">
-          <form>
-            <div className="mb-3">
-              <h3 className="text-header">
-                <center>Register</center>
-              </h3>
-              <label htmlFor="exampleInputEmail1" className="form-label">
-                Email :
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                aria-describedby="emailHelp"
-                onChange={(e) => {
-                  setAuthen({ ...authen, email: e.target.value });
-                }}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="exampleInputPassword1" className="form-label">
-                Password :
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                onChange={(e) => {
-                  setAuthen({ ...authen, password: e.target.value });
-                }}
-              />
-            </div>
-            <div>
-              <div className="btn_register">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    isRegister();
+        <div className="card container-card-register">
+          <div className="card-header">
+            <h3>Register</h3>
+          </div>
+          <div className="card-body bg-light">
+            <form>
+              <div className="mb-3">
+                <label className="form-label">Email :</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  aria-describedby="emailHelp"
+                  onChange={(e) => {
+                    setAuthen({ ...authen, email: e.target.value });
                   }}
-                >
-                  Register
-                </button>
+                />
               </div>
 
-              <div className="btn_canceled">
-                <button
-                  type="submit"
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    history.push("/login");
+              <div className="mb-3">
+                <label  className="form-label">Password :</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  onChange={(e) => {
+                    setAuthen({ ...authen, password: e.target.value });
                   }}
-                >
-                  Cancel
-                </button>
+                />
               </div>
-            </div>
-          </form>
+              <div className="row ">
+                <div className="col col-12 align-self-end  mb-3 ">
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-100"
+                    
+                    onClick={(e) => {
+                      e.preventDefault();
+                      isRegister();
+                    }}
+                  >
+                    Register
+                  </button>
+                </div>
+
+                <div className="col ">
+                  <button
+                    type="submit"
+                    className="btn btn-secondary w-100 "
+                    onClick={() => {
+                      history.push("/login");
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

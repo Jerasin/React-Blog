@@ -1,14 +1,6 @@
-.footer{
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    /* position: fixed; */
-    bottom: 0;
-    height: 100%;
-    background-color: #1c1e21;
-    box-sizing: border-box;
-}
-
-.footer_nav{
-    padding: 8px ;
+.main-footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }

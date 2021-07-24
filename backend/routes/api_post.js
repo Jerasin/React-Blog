@@ -14,18 +14,7 @@ const fs = require("fs-extra");
 const formidable = require("formidable");
 const { JSONParser } = require("formidable");
 
-router.post("/create-post-test", (req, res) => {
-  try {
-    let form = new formidable.IncomingForm();
-    form.parse(req, async (error, fields, files) => {
-      const { title, post, created_by } = fields;
-      console.log(files)
-      // res.json({status: 200 ,results: "Success"})
-    })
-  } catch (err) {
-    console.log(err);
-  }
-});
+
 
 // * Create Post
 router.post("/create-post", (req, res) => {

@@ -12,9 +12,10 @@ function Post() {
   const { forceUpdate } = useContext(AuthContext);
   useEffect(async () => {
     try {
-      let result = await httpClient.get(
-        `${server.GET_POSTBYIDS_TEXTEDITOR_URL}/${id}`
+      let result = await httpClient.post(
+        `${server.GET_POSTBYID_TEXTEDITOR_URL}/${id}`
       );
+
       setPost(result.data.result);
     } catch (err) {
       localStorage.clear();
@@ -26,36 +27,52 @@ function Post() {
     if (!post) return;
     // console.log(post)
     return post.map((data) => {
-      // console.log(data);
+      console.log(data);
       return (
-        <div key={id} className="container-fluid container-header">
-          <div className="title">
+        <div key={id} className="container-fluid">
+          <div className="m-3">
             <h3>Title: {data.title}</h3>
           </div>
-{console.log(data)}
-          <div className="post-grid">
-            <div className="container-fluid">
-              <div className="container_sidebar">
-              <div className="menubar">
-                <div>
-                <h3>Status</h3>
-                </div>
-                <h3 >Create by</h3>
-                <p>{data.email}</p>
-              </div>
+
+          <div className="container-fluid " />
+          <div className="row">
+            <div className="col">
+              <div className="container bg-light p-5 " style={{border: "2px solid black" ,borderRadius: "25px"}}>
+                <form>
+                  <div className="mb-3 text-center">
+                    <h3>Detail</h3>
+                  </div>
+                  <hr />
+                  <div className="mb-3 ">
+                    <label htmlFor="exampleInputEmail1" className="form-label">
+                      Create Date
+                    </label>
+                    <input
+                      className="form-control"
+                      value={data.created_at.split("T")[0]}
+                      disabled={true}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="exampleInputEmail1" className="form-label">
+                      Category
+                    </label>
+                    <br />
+                    <input
+                      className="form-control"
+                      value={data.language}
+                      disabled={true}
+                    />
+                  </div>
+                </form>
               </div>
             </div>
-            <div className="container-fluid main_content">
-              
-            <div className="container-xl container-texteditor-post">
-              <div className="" style={{ paddingBottom: "15px" }}>
-                <div
-                  className="post_data"
-                  dangerouslySetInnerHTML={{ __html: JSON.parse(data.posts) }}
-                />
-              </div>
-            </div>
-         
+            <div className="col-auto col-lg-8">
+              <div
+                className="bg-light m-1  min-vh-100 p-3"
+                dangerouslySetInnerHTML={{ __html: data.posts }}
+              />
             </div>
           </div>
         </div>
@@ -63,7 +80,11 @@ function Post() {
     });
   };
 
-  return <div className="gird-container-post">{post_data()}</div>;
+  return (
+    <div className="container-fluid" style={{}}>
+      {post_data()}
+    </div>
+  );
 }
 
 export default Post;

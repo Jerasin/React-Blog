@@ -128,7 +128,7 @@ router.post("/register", (req, res, next) => {
       };
       bcrypt.hash(user.password, 8, (err, hash) => {
         user.password = hash;
-        let sql_insert = " INSERT INTO users SET ? ";
+        const sql_insert = " INSERT INTO users SET ? ";
         db.query(sql_insert, user, (error, results, fields) => {
           // เกิด error ในคำสั่ง sql
           if (error)

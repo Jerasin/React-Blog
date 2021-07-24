@@ -1,19 +1,21 @@
-import React, { Children, useState, useCallback } from "react";
+import React, { Children, useState, useCallback, useEffect } from "react";
 import "./App.css";
 import jwt_decode from "jwt-decode";
 import Login from "./components/pages/Login/Login";
-import Post from './components/pages/Post/Post'
+import Post from "./components/pages/Post/Post";
 import Register from "./components/pages/Register/Register";
-import Sidebar from './components/fragments/Sidebar/Sidebar'
+import Sidebar from "./components/fragments/Sidebar/Sidebar";
 import Herader from "./components/fragments/Header/Herader";
 import Footer from "./components/fragments/Footer/Footer";
 import Main from "./components/pages/Main/Main";
-import CreatePost from './components/pages/CreatePost/CreatePost'
-import EditTextEditor from './components/TextEditor/EditTextEditor'
+import CreatePost from "./components/pages/CreatePost/CreatePost";
+import EditTextEditor from "./components/TextEditor/EditTextEditor";
 import AuthContextProvider from "./AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import PubilcRoute from "./PubilcRoute";
-import TextEditor from './components/TextEditor/TextEditor'
+import TextEditor from "./components/TextEditor/TextEditor";
+import Setting from "./components/pages/Setting/Setting";
+import UserPost from "./components/pages/ีUserPost/UserPost";
 import {
   BrowserRouter as Router,
   Switch,
@@ -37,58 +39,68 @@ function App() {
   const isLogin = () => {
     try {
       token = localStorage.getItem("localID");
-      if (!token) return ;
+      if (!token) return;
       let decoded = jwt_decode(token);
       return decoded;
     } catch (err) {
       localStorage.clear();
+      forceUpdate();
     }
   };
-  
 
   return (
     <AuthContextProvider forceUpdate={forceUpdate}>
-      <Router>
-        {isLogin() && <Herader />}
+      <div className="position-relative pb-5 min-vh-100">
+        <Router>
+          {isLogin() && <Herader />}
 
+          {/* {isLogin() && <Sidebar/>} */}
+          <Switch>
+            <PubilcRoute path="/login">
+              <Login />
+            </PubilcRoute>
 
-        {/* {isLogin() && <Sidebar/>} */}
-        <Switch>
-          <PubilcRoute path="/login">
-            <Login />
-          </PubilcRoute>
-          
-          <PubilcRoute path="/register">
-            <Register />
-          </PubilcRoute>
+            <PubilcRoute path="/register">
+              <Register />
+            </PubilcRoute>
 
-          <PrivateRoute path="/main">
-            <Main />
-          </PrivateRoute>
+            <PrivateRoute path="/main">
+              <Main />
+            </PrivateRoute>
 
-          <PrivateRoute path="/post/:id">
-            <Post />
-          </PrivateRoute>
+            <PrivateRoute path="/post/:id">
+              <Post />
+            </PrivateRoute>
 
-          <PrivateRoute path="/create-post">
-            <CreatePost />
-          </PrivateRoute>
+            <PrivateRoute path="/create-post">
+              <CreatePost />
+            </PrivateRoute>
 
-          <PrivateRoute path="/text-editor">
-            <TextEditor />
-          </PrivateRoute>
+            <PrivateRoute path="/text-editor">
+              <TextEditor />
+            </PrivateRoute>
 
-          <PrivateRoute path="/edit-text-editor/:id">
-            <EditTextEditor />
-          </PrivateRoute>
+            <PrivateRoute path="/user-post/:id">
+              <UserPost />
+            </PrivateRoute>
 
-          <Route path="/" exact>
-            {redirectToLogin()}
-          </Route>
-          <Route path="*">{redirectToLogin()}</Route>
-        </Switch>
-        {isLogin() && <Footer />}
-      </Router>
+            <PrivateRoute path="/edit-text-editor/:id">
+              <EditTextEditor />
+            </PrivateRoute>
+
+            <PrivateRoute path="/setting">
+              <Setting />
+            </PrivateRoute>
+
+            <Route path="/" exact>
+              {redirectToLogin()}
+            </Route>
+            <Route path="*">{redirectToLogin()}</Route>
+          </Switch>
+
+          {isLogin() && <Footer />}
+        </Router>
+      </div>
     </AuthContextProvider>
   );
 }

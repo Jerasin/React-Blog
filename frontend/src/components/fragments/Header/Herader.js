@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { withRouter } from "react-router";
+import { withRouter, useParams } from "react-router-dom";
 import { AuthContext } from "../../../AuthContext";
 import jwt_decode from "jwt-decode";
 import "./Header.css";
@@ -9,9 +9,8 @@ function Herader(props) {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
 
-
   // ? function Click Outside Close Navbar
-  
+
   const useOutsideAlerter = (ref) => {
     useEffect(() => {
       /**
@@ -40,7 +39,7 @@ function Herader(props) {
       let token = localStorage.getItem("localID");
       if (!token) return;
       let decoded = jwt_decode(token);
-      return decoded.email.split("@")[0];
+      return decoded.email;
     } catch (err) {
       localStorage.clear();
     }
@@ -81,7 +80,12 @@ function Herader(props) {
             id="navbarNavAltMarkup1"
           >
             <div className="container_profile">
-              <p className="nav-link  nav_p user_profile">
+              <p
+                className="nav-link  nav_p user_profile"
+                onClick={() => {
+                  props.history.push(`/user-post/${getEmail()}`);
+                }}
+              >
                 <i className="far fa-user" style={{ paddingRight: "5px" }} />
                 {getEmail()}
               </p>
@@ -124,7 +128,12 @@ function Herader(props) {
               />
               Create Post
             </p>
-            <p className="nav-link  nav_p">
+            <p
+              className="nav-link  nav_p"
+              onClick={() => {
+                props.history.push("/setting");
+              }}
+            >
               <i className="fas fa-cog" style={{ paddingRight: "5px" }} />
               Setting
             </p>

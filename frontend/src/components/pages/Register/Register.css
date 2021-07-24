@@ -1,25 +1,23 @@
-.container{
-    position: relative;
-    width: 100%;
-    max-width: 300px;
+.container-register {
+  height: 100%;
+  align-content: center;
 }
 
-.container-sm {
-  margin-top: 210px;
-  max-width: 300px;
-  border: 2px solid black;
-  padding: 12px;
-  background-color: rgb(255, 255, 255);
+.container-card-register {
+  /* Start Set Position Center on Page */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  /* End Set Position Center on Page */
+
+  height: 400px;
+  width: 350px;
+  background-color: rgba(0, 127, 253, 0.5) !important;
 }
 
-.btn {
-  width: 100%;
-}
-
-.btn_register{
-  padding: 4px;
-}
-
-.btn_canceled {
-  padding: 4px;
+.card-header h3 {
+  color: white;
 }

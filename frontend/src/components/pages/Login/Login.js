@@ -122,106 +122,109 @@ export default function Login(props) {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="container">
+    <div className="container container-login">
+      <div className="d-flex justify-content-center h-100">
         {/* Popup Show State */}
         {isPopup()}
-        <div className="form">
-          <form>
-            <div className="mb-3">
-              <h3 className="text-header">
-                <center>Login</center>
-              </h3>
-              <label htmlFor="exampleInputEmail1" className="form-label">
-                Email :
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                aria-describedby="emailHelp"
-                onChange={(e) => {
-                  setAuthen({ ...authen, email: e.target.value });
-                }}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="exampleInputPassword1" className="form-label">
-                Password :
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                onChange={(e) => {
-                  setAuthen({ ...authen, password: e.target.value });
-                }}
-              />
-            </div>
-            <div className="login_social">
-              <center>
-                <div>
-                  <h5 className="text-social">Login Social</h5>
-                </div>
-                {/* fa-2x edit size */}
-                <center className="icon-container">
-                  <div className="icon-fb">
-                    <a href={apiUrl + server.FB_LOGIN}>
-                      <i className="fab fa-facebook fa-2x" />
-                    </a>
-                  </div>
-                  <div className="icon-go">
-                    <a href={apiUrl + server.GOOGLE_LOGIN}>
-                      <i className="fab fa-google  fa-2x" />
-                    </a>
-                  </div>
-                </center>
-              </center>
-            </div>
-            <div>
-              <div className="container-fb">
-                <FacebookLogin
-                  appId="870240086864574"
-                  autoLoad={false}
-                  textButton=""
-                  fields="name,email,picture"
-                  onClick={() => {
-                    // isLoginFb();
+        <div className="card container-card-login">
+          <div className="card-header">
+            <h3>Login</h3>
+          </div>
+
+          <div className="card-body bg-light">
+            <form>
+              <div className="mb-3">
+                <label className="form-label">Email :</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  aria-describedby="emailHelp"
+                  onChange={(e) => {
+                    setAuthen({ ...authen, email: e.target.value });
                   }}
-                  callback={responseFacebook}
-                  cssClass="btn btn-primary"
-                  icon="fa-facebook"
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password :</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  onChange={(e) => {
+                    setAuthen({ ...authen, password: e.target.value });
+                  }}
                 />
               </div>
 
-              <div className="btn_register">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    isLogin();
-                  }}
-                >
-                  Login
-                </button>
+              <div className="row justify-content-center mb-3">
+                <div className="col col-12">
+                  <div className="mb-3">
+                    <h5 className="text-center">Login Social</h5>
+                  </div>
+                  {/* fa-2x edit size */}
+
+                  <div className="row justify-content-center pb-2 ">
+                    <div className="col text-center">
+                      <a href={apiUrl + server.FB_LOGIN}>
+                        <i className="fab fa-facebook fa-2x" />
+                      </a>
+                    </div>
+                    <div className="col text-center">
+                      <a href={apiUrl + server.GOOGLE_LOGIN}>
+                        <i className="fab fa-google  fa-2x" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="btn_canceled">
-                <button
-                  type="submit"
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    history.push("/register");
-                  }}
-                >
-                  Register
-                </button>
+              <div className="row">
+                <div className="col col-12 mb-3">
+                  <FacebookLogin
+                    appId="870240086864574"
+                    autoLoad={false}
+                    textButton=""
+                    fields="name,email,picture"
+                    onClick={() => {
+                      // isLoginFb();
+                    }}
+                    callback={responseFacebook}
+                    cssClass="btn btn-primary"
+                    icon="fa-facebook"
+                  />
+
+                </div>
+
+                <div className="col col-12 mb-3">
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-100"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      isLogin();
+                    }}
+                  >
+                    Login
+                  </button>
+                </div>
+
+                <div className="col col-12">
+                  <button
+                    type="submit"
+                    className="btn btn-secondary w-100"
+                    onClick={() => {
+                      history.push("/register");
+                    }}
+                  >
+                    Register
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
