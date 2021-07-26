@@ -13,15 +13,19 @@ function UserPost() {
   const { forceUpdate } = useContext(AuthContext);
 
   useEffect(async () => {
-    const result = await httpClient.post(
-      `${server.GET_POSTBYEMAIL_TEXTEDITOR_URL}/${id}`
-    );
-    forceUpdate();
-    if (result.data.status === 200) {
-      setPost(result.data.result);
-      setTogger(false);
-    } else {
-      setTogger(false);
+    try {
+      const result = await httpClient.post(
+        `${server.GET_POSTBYEMAIL_TEXTEDITOR_URL}/${id}`
+      );
+      forceUpdate();
+      if (result.data.status === 200) {
+        setPost(result.data.result);
+        setTogger(false);
+      } else {
+        setTogger(false);
+        localStorage.clear();
+      }
+    } catch (err) {
       localStorage.clear();
     }
   }, [togger]);
@@ -37,9 +41,10 @@ function UserPost() {
       >
         <div className="card">
           {/* <img src="..." className="card-img-top" alt="..." /> */}
+         
           <div className="card-body">
             <h5 className="card-title">{data.title}</h5>
-            <p className="card-text">Category: {data.laguange}</p>
+            <p className="card-text">Category: {data.language}</p>
             <p className="card-text">Post by: {data.email}</p>
             <div className="row">
               <div className="col">

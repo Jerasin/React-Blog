@@ -118,7 +118,7 @@ router.post("/post", authorization, async (req, res) => {
 
     db.query(sql, data, (error, fields, files) => {
       if (error) {
-        console.log("Error DB",error);
+        console.log("Error DB", error);
         res.json({ status: 404, result: error });
         return;
       }
@@ -132,14 +132,99 @@ router.post("/post", authorization, async (req, res) => {
   }
 });
 
-// ? Get All Posts
-router.get("/posts", authorization, (req, res) => {
+// ? Get All Posts By Key Word
+router.post("/post-serach", authorization, (req, res) => {
+  const { serach, pageByKeyWord, limitByKeyWord } = req.body;
+  const query = `%${serach}%`;
+  let startIndex = (pageByKeyWord - 1) * limitByKeyWord;
+  let endIndex = limitByKeyWord * pageByKeyWord;
+
+  const sql = ` SELECT p.id ,  p.category_id  , p.title  , c.language , u.email , p.created_at FROM master_blog.posts_texteditor AS p LEFT JOIN category AS c ON  p.category_id = c.id LEFT JOIN users AS u ON  p.user_created =  u.short_id WHERE c.language  like ? `;
+
+  // let testsql = mysql.format(sql, serach);
+  // console.log(testsql);
+
+  try {
+    db.query(sql, query, (error, fields, files) => {
+      if (error) return res.json({ status: 404, result: error });
+
+      const dataLenth = fields.length;
+
+      const countPage = () => {
+        return parseInt(Math.ceil(dataLenth / limitByKeyWord));
+      };
+
+      const results = fields.splice(startIndex, endIndex);
+
+      const next = () => {
+        return parseInt(pageByKeyWord) + 1;
+      };
+
+      const now = () => {
+        return parseInt(pageByKeyWord);
+      };
+
+      const after = () => {
+        return parseInt(pageByKeyWord) - 1;
+      };
+      
+      return res.json({
+        status: 200,
+        result: results,
+        after: after(),
+        now: now(),
+        next: next(),
+        countPage: countPage(),
+      });
+    });
+  } catch (err) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
+// ? Get All Posts By limit
+router.post("/posts", authorization, (req, res) => {
+  const { page, limit } = req.body;
+  console.log(req.body);
+
+  let startIndex = (page - 1) * limit;
+  let endIndex = limit * page;
+
   try {
     let sql =
-      " SELECT p.id  , p.title  , c.language , u.email , p.created_at FROM master_blog.posts_texteditor AS p LEFT JOIN category AS c ON  p.category_id = c.id LEFT JOIN users AS u ON  p.user_created =  u.short_id limit 10 ";
+      " SELECT p.id  , p.title  , c.language , u.email , p.created_at FROM master_blog.posts_texteditor AS p LEFT JOIN category AS c ON  p.category_id = c.id LEFT JOIN users AS u ON  p.user_created =  u.short_id ";
     db.query(sql, (error, fields, files) => {
       if (error) return res.json({ status: 404, result: error });
-      return res.json({ status: 200, result: fields });
+      // console.log(fields.length);
+
+      const dataLenth = fields.length;
+
+      const countPage = () => {
+        return parseInt(Math.ceil(dataLenth / limit));
+      };
+
+      const results = fields.splice(startIndex, endIndex);
+
+      const next = () => {
+        return parseInt(page) + 1;
+      };
+
+      const now = () => {
+        return parseInt(page);
+      };
+
+      const after = () => {
+        return parseInt(page) - 1;
+      };
+
+      return res.json({
+        status: 200,
+        result: results,
+        after: after(),
+        now: now(),
+        next: next(),
+        countPage: countPage(),
+      });
     });
   } catch (error) {
     res.json({ status: 500, result: error });
@@ -184,28 +269,42 @@ router.post("/post-id/:id", authorization, (req, res) => {
 });
 
 // ? Update
-router.put(`/post/:id`, async (req, res) => {
+router.put(`/post/:id`, authorization, async (req, res) => {
   const { id } = req.params;
   const { title, post, category, user_created, initialPost } = req.body;
+  console.log(req.body);
   try {
     let regularSrc = /src\s*=\s*"(.+?)"/g;
-    let checkSrcNumber = /([0-9])\w+/g;
+    let checkSrcImg = /([0-9])\w+/g;
     let str = initialPost;
+    let checkPost = post;
     let resultRegular;
-    let listDeleteImg = [];
+    let listDataFrontend = [];
+    let listDataBackend = [];
+
+
 
     // ? Loop หาค่า src ของ tag img
+    while ((resultRegular = regularSrc.exec(checkPost)) !== null) {
+      listDataFrontend.push(`${resultRegular[1]}`);
+    }
+
     while ((resultRegular = regularSrc.exec(str)) !== null) {
-      listDeleteImg.push(`${resultRegular[1]}`);
+      listDataBackend.push(`${resultRegular[1]}`);
     }
 
     // ? Check Format Img
-    checkFormatNumber = checkSrcNumber.test(listDeleteImg);
+    checkFormatImg_FN = checkSrcImg.test(listDataFrontend);
+    checkFormatImg_BN = checkSrcImg.test(listDataBackend);
 
     // ? เทียบ 2 Arrary เอาค่าทีี่ไม่ซ้ำไปสร้าง Arrary ใหม่
-    let result = _.difference(listDeleteImg, running_Image_Id);
+    let result = _.difference( listDataBackend , listDataFrontend);
+    console.log("listDataFrontend" , listDataFrontend);
+    console.log("listDataBackend" , listDataBackend);
+    console.log("result" , result);
+    // console.log(result.length !== 0 && running_Image_Id.length !== 0);
 
-    if (result.length !== 0) {
+    if (result.length !== 0 && running_Image_Id.length !== 0) {
       // ? Loop หารูปที่ไม่ได้ใช้และลบทิ้ง
       for (let index = 0; index < result.length; index++) {
         let deleteImg = result[index].split("/")[4];
@@ -215,6 +314,7 @@ router.put(`/post/:id`, async (req, res) => {
         await fs.remove(deletePath);
       }
     }
+
     const checkType = typeof category;
     if (checkType === "string") {
       const data = {
@@ -231,7 +331,7 @@ router.put(`/post/:id`, async (req, res) => {
     } else {
       const dataFull = {
         title: title,
-        post: post,
+        posts: post,
         updated_by: user_created,
         category_id: category,
         updated_at: new Date(),
@@ -249,7 +349,7 @@ router.put(`/post/:id`, async (req, res) => {
 });
 
 // ? Delete Post
-router.delete(`/post/:id`, async (req, res) => {
+router.delete(`/post/:id`, authorization, async (req, res) => {
   const { id } = req.params;
   let regularSrc = /src\s*=\s*"(.+?)"/g;
   let checkSrcNumber = /([0-9])\w+/g;
@@ -260,7 +360,7 @@ router.delete(`/post/:id`, async (req, res) => {
   try {
     const sql_select = "SELECT posts FROM posts_texteditor WHERE id = ?";
     db.query(sql_select, id, async (error, fields, files) => {
-      if (error) return res.json({ status: 404, result: error })
+      if (error) return res.json({ status: 404, result: error });
 
       str = fields[0].posts;
 
@@ -278,7 +378,7 @@ router.delete(`/post/:id`, async (req, res) => {
         // ? Loop หารูปที่ไม่ได้ใช้และลบทิ้ง
         for (let index = 0; index < listDeleteImg.length; index++) {
           let deleteImg = listDeleteImg[index].split("/")[4];
-          
+
           let deletePath =
             path.resolve("./" + "/upload/images/") + "/" + deleteImg;
           await fs.remove(deletePath);
@@ -289,11 +389,10 @@ router.delete(`/post/:id`, async (req, res) => {
     // ?  Query Delete on DB
     const sql = "DELETE FROM posts_texteditor WHERE id = ?";
 
-      db.query(sql, id, (error, fields, files) => {
-        if (error) return res.json({ status: 404, result: error });
-        return res.json({ status: 200, result: fields });
-      });
-
+    db.query(sql, id, (error, fields, files) => {
+      if (error) return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: fields });
+    });
   } catch (err) {
     return res.status(500).json({ status: 500, result: err });
   }

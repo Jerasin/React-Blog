@@ -7,7 +7,7 @@ function AuthContextProvider(props) {
     const [authen, setAuthen] = useState({
         email: null,
         password: null,
-        user_role: "user",
+        user_role: 2,
       });
 
     const  {forceUpdate} = props

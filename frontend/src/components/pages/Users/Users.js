@@ -4,31 +4,56 @@ import { server } from "../../../Constatns";
 import jwt_decode from "jwt-decode";
 import { useParams, useHistory } from "react-router-dom";
 import { AuthContext } from "../../../AuthContext";
-import "./Setting.css";
 
-function Setting(props) {
-  const [categoryList, setCategoryList] = useState([]);
+function Users(props) {
+  const [usersList, setUsersList] = useState([]);
   const [createCategory, setCreateCategory] = useState({
-    language: null,
-    created_by: null,
+    language: "",
+    created_by: "",
   });
   const [reload, setReload] = useState(false);
   const { forceUpdate } = useContext(AuthContext);
-  const [pageSetting, setPageSetting] = useState(1);
-  const [limitSetting, setLimitSetting] = useState(5);
+  const [pageUser, setPageUser] = useState(1);
+  const [limitUser, setLimitUser] = useState(5);
   const [currentPage, setCurrentPage] = useState(null);
+  const [userSearch, setUserSearch] = useState(null);
+  const [createRole, setCreateRole] = useState({
+    role: null,
+    created_by: null,
+  });
+  const [searchUsers, setSearchUsers] = useState(null);
   const history = useHistory();
 
   useEffect(async () => {
-    const result = await httpClient.post(server.GET_CATEGORYBYLIMIT_URL, {
-      pageSetting,
-      limitSetting,
+    const result = await httpClient.post(server.GET_USERSBYLIMIT_URL, {
+      pageUser,
+      limitUser,
     });
-    setCategoryList(result.data.result);
+
+    if (searchUsers) {
+      setUsersList(searchUsers.result);
+      setCurrentPage(searchUsers);
+      setReload(false);
+      forceUpdate();
+      return;
+    }
+
+    setUsersList(result.data.result);
     setCurrentPage(result.data);
     setReload(false);
     forceUpdate();
-  }, [pageSetting, reload]);
+  }, [pageUser, reload]);
+
+  const checkAuthen = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      if (!token) return;
+      let decoded = jwt_decode(token);
+      return decoded.short_id;
+    } catch (err) {
+      localStorage.clear();
+    }
+  };
 
   const pagination = () => {
     if (!currentPage) return;
@@ -43,7 +68,7 @@ function Setting(props) {
               href="#"
               aria-label="Previous"
               onClick={() => {
-                setPageSetting(pageSetting - 1);
+                setPageUser(pageUser - 1);
               }}
             >
               <span aria-hidden="true">«</span>
@@ -56,7 +81,7 @@ function Setting(props) {
             <button
               className="btn btn-light"
               onClick={() => {
-                setPageSetting(pageSetting - 1);
+                setPageUser(pageUser - 1);
               }}
             >
               {currentPage.after}
@@ -75,7 +100,7 @@ function Setting(props) {
             <button
               className="btn btn-light"
               onClick={() => {
-                setPageSetting(pageSetting + 1);
+                setPageUser(pageUser + 1);
               }}
             >
               {currentPage.next}
@@ -89,7 +114,7 @@ function Setting(props) {
               className="page-link"
               aria-label="Next"
               onClick={() => {
-                setPageSetting(pageSetting + 1);
+                setPageUser(pageUser + 1);
               }}
             >
               <span aria-hidden="true">»</span>
@@ -111,27 +136,30 @@ function Setting(props) {
     }
   };
 
-  const category = () => {
-    return categoryList.map((category) => {
-      // console.log(category);
+  const users = () => {
+    return usersList.map((data) => {
+      // console.log("usersList",data);
       return (
-        <tr key={category.id}>
-          <th scope="row">{category.id}</th>
-          <td>{category.language}</td>
-          <td> {category.created_at.split("T")[0]} </td>
-          <td>{category.email}</td>
+        <tr key={data.id}>
+          <th scope="row">{data.id}</th>
+          <td>{data.email}</td>
+          <td> {data.created_at.split("T")[0]} </td>
+          <td>{data.role_name}</td>
           <td>
             <p className="me-4 ms-4">
-              <button className="btn btn-primary  w-100" onClick={() => {
-                history.push(`edit-category/${category.id}`)
-              }}>Edit</button>
+              <button
+                className="btn btn-primary  w-100"
+                onClick={() => {
+                  history.push(`edit-user/${data.id}`);
+                }}
+              >
+                Edit
+              </button>
             </p>
             <p
               className="me-4 ms-4"
               onClick={() => {
-                httpClient.delete(
-                  `${server.DELETE_CATEGORY_URL}/${category.id}`
-                );
+                httpClient.delete(`${server.DELETE_USER_URL}/${data.id}`);
                 setReload(true);
               }}
             >
@@ -143,48 +171,79 @@ function Setting(props) {
     });
   };
 
-  const handleCreateCategory = async (category) => {
-    if (!category) return alert("Please Select");
+  const handleSearch = async () => {
     try {
+      const result = await httpClient.post(server.SERACH_USER_URL, {
+        userSearch,
+        pageUser,
+        limitUser,
+      });
+      // console.log(result.data);
+      setSearchUsers(result.data);
       setReload(true);
-      const result = await httpClient.post(
-        server.CREATED_CATEGORY_URL,
-        category
-      );
     } catch (err) {
       localStorage.clear();
     }
   };
 
+  const handleCreateRole = async () => {
+    if (createRole === null) return alert("Please Select");
+    const result = await httpClient.post(server.CREATED_ROLE_URL, createRole);
+    if (result.data.status === 404) return alert("Duplicate Role");
+  };
+
   return (
     <div className="container-fluid p-0 p-lg-5">
-      <h1>Setting</h1>
+      <h1>Users</h1>
       <hr />
       <div className="row p-0 m-0 justify-content-center">
         <div className="col col-auto col-lg-4 mb-3">
           <div className="container bg-light">
-            <label className="mb-3 fs-4">Cretae Category</label>
+            <label className="mb-3 fs-4">Search User</label>
             <input
               type="text"
               className="form-control"
               placeholder=""
               onChange={(e) => {
-                setCreateCategory({
-                  language: e.target.value,
-                  created_by: getShortId(),
-                });
+                setUserSearch(e.target.value);
               }}
             />
             <button
               className="btn btn-primary mt-3 mb-3"
               onClick={() => {
-                handleCreateCategory(createCategory);
+                handleSearch();
               }}
             >
-              Create Category
+              Serach
+            </button>
+          </div>
+
+          <div className="container bg-light mt-3">
+            <label className="mb-3 fs-4">Create Role</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder=""
+              onChange={(e) => {
+                setCreateRole({
+                  role: e.target.value,
+                  created_by: checkAuthen(),
+                });
+              }}
+            />
+            <button
+              className="btn btn-primary mt-3 mb-3"
+              type="submit"
+              onClick={() => {
+                handleCreateRole();
+                setReload(true);
+              }}
+            >
+              Create
             </button>
           </div>
         </div>
+
         <div className="col col-auto col-lg-8 ">
           <div className="container bg-light border border-2 border-black">
             <h4 className="mt-2">Category List</h4>
@@ -194,13 +253,13 @@ function Setting(props) {
                 <thead>
                   <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Language</th>
-                    <th scope="col">Creted At</th>
-                    <th scope="col">Created By</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
-                <tbody>{category()}</tbody>
+                <tbody>{users()}</tbody>
               </table>
 
               <div className="container mt-3">
@@ -214,4 +273,4 @@ function Setting(props) {
   );
 }
 
-export default Setting;
+export default Users;

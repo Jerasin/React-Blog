@@ -10,9 +10,10 @@ function Post() {
   let { id } = useParams();
   const [post, setPost] = useState(null);
   const { forceUpdate } = useContext(AuthContext);
+  
   useEffect(async () => {
     try {
-      let result = await httpClient.post(
+      const result = await httpClient.post(
         `${server.GET_POSTBYID_TEXTEDITOR_URL}/${id}`
       );
 
@@ -68,6 +69,7 @@ function Post() {
                 </form>
               </div>
             </div>
+            
             <div className="col-auto col-lg-8">
               <div
                 className="bg-light m-1  min-vh-100 p-3"

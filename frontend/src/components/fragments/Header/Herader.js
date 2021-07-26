@@ -1,16 +1,30 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { withRouter, useParams } from "react-router-dom";
 import { AuthContext } from "../../../AuthContext";
+import { httpClient } from "../../../utils/HttpClient";
+import { server } from "../../../Constatns";
 import jwt_decode from "jwt-decode";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import "./Header.css";
 
 function Herader(props) {
   const { authen, setAuthen, forceUpdate } = useContext(AuthContext);
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
-
+  const [serach, setSerach] = useState(null);
+  const [resultSerach, setResultSerach] = useState(null);
+  const [pageByKeyWord, setPageByKeyWord] = useState(1);
+  const [limitByKeyWord, setLimitByKeyWord] = useState(20);
+  const location = useLocation();
   // ? function Click Outside Close Navbar
-
   const useOutsideAlerter = (ref) => {
     useEffect(() => {
       /**
@@ -30,6 +44,14 @@ function Herader(props) {
     }, [ref]);
   };
 
+  const disabledBtnSerach = () => {
+    if (location.pathname === "/main") {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   //? State about function Click Outside Close Navbar
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
@@ -40,6 +62,17 @@ function Herader(props) {
       if (!token) return;
       let decoded = jwt_decode(token);
       return decoded.email;
+    } catch (err) {
+      localStorage.clear();
+    }
+  };
+
+  const checkAuthen = () => {
+    try {
+      let token = localStorage.getItem("localID");
+      if (!token) return;
+      let decoded = jwt_decode(token);
+      return decoded.userRole;
     } catch (err) {
       localStorage.clear();
     }
@@ -58,7 +91,46 @@ function Herader(props) {
             TechBlog
           </b>
         </h3>
-        <div className="d-flex">
+        <div className="d-flex justify-content-between">
+          <div className="input-group">
+            <input
+              className="form-control border-end-0 border rounded-pill bg-light"
+              type="text"
+              disabled={disabledBtnSerach()}
+              onChange={(e) => {
+                setSerach(e.target.value);
+              }}
+              placeholder="Search by Category"
+              id="example-search-input"
+            />
+            <span className="input-group-append me-3 ">
+              <button
+                className="btn btn-outline-secondary bg-white border-start-0 border rounded-pill ms-n3 "
+                type="button"
+                disabled={disabledBtnSerach()}
+                onClick={async () => {
+                  try {
+                    const result = await httpClient.post(
+                      server.GET_POSTBYKEYWORD_TEXTEDITOR_URL,
+                      { serach, pageByKeyWord, limitByKeyWord }
+                    );
+
+                    // console.log(result.data.result.length);
+                    if (result.data.result.length === 0)
+                      return alert("Not found");
+                    // console.log(result.data);
+                    props.getKeyWord(result.data);
+                  } catch (err) {
+                    localStorage.clear();
+                    forceUpdate();
+                  }
+                }}
+              >
+                <i className="fa fa-search" />
+              </button>
+            </span>
+          </div>
+
           <button
             ref={wrapperRef}
             className="custom-toggler navbar-toggler btn_navbar"
@@ -70,7 +142,7 @@ function Herader(props) {
             aria-label="Toggle navigation"
             onClick={handleNavCollapse}
           >
-            <i className="fas fa-bars" />
+            <i className="fa fa-bars" />
           </button>
         </div>
 
@@ -84,9 +156,10 @@ function Herader(props) {
                 className="nav-link  nav_p user_profile"
                 onClick={() => {
                   props.history.push(`/user-post/${getEmail()}`);
+                  forceUpdate();
                 }}
               >
-                <i className="far fa-user" style={{ paddingRight: "5px" }} />
+                <i className="fa fa-user" style={{ paddingRight: "5px" }} />
                 {getEmail()}
               </p>
             </div>
@@ -98,7 +171,7 @@ function Herader(props) {
                 forceUpdate();
               }}
             >
-              <i className="fas fa-home" style={{ paddingRight: "5px" }} />
+              <i className="fa fa-home" style={{ paddingRight: "5px" }} />
               Main
             </p>
 
@@ -110,7 +183,7 @@ function Herader(props) {
               }}
             >
               <i
-                className="fas fa-plus-square"
+                className="fa fa-plus-square"
                 style={{ paddingRight: "5px" }}
               />
               Text Editor
@@ -123,20 +196,37 @@ function Herader(props) {
               }}
             >
               <i
-                className="far fa-plus-square"
+                className="fa fa-plus-square"
                 style={{ paddingRight: "5px" }}
               />
               Create Post
             </p>
-            <p
-              className="nav-link  nav_p"
-              onClick={() => {
-                props.history.push("/setting");
-              }}
-            >
-              <i className="fas fa-cog" style={{ paddingRight: "5px" }} />
-              Setting
-            </p>
+            {checkAuthen() === 1 && (
+              <p
+                className="nav-link  nav_p"
+                onClick={() => {
+                  forceUpdate();
+                  props.history.push("/setting");
+                }}
+              >
+                <i className="fa fa-cog" style={{ paddingRight: "5px" }} />
+                Setting
+              </p>
+            )}
+
+            {checkAuthen() === 1 && (
+              <p
+                className="nav-link  nav_p"
+                onClick={() => {
+                  forceUpdate();
+                  props.history.push("/users");
+                }}
+              >
+                <i className="fa fa-users" style={{ paddingRight: "5px" }} />
+                Users
+              </p>
+            )}
+
             <p
               className="nav-link  nav_p"
               onClick={() => {
@@ -146,7 +236,7 @@ function Herader(props) {
               }}
             >
               <i
-                className="fas fa-sign-out-alt"
+                className="fa fa-sign-out fas fa-sign-out-alt"
                 style={{ paddingRight: "5px" }}
               />
               Logout

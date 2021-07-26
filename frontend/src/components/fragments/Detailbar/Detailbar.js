@@ -16,11 +16,11 @@ function Detailbar({ getcategory }) {
       const cartegory = await httpClient.post(
         `${server.GET_POSTBYID_TEXTEDITOR_URL}/${id}`
       );
+      // console.log("result",result)
+      // console.log("cartegory",cartegory)
       if (cartegory) {
         await fetchCartegory(cartegory.data.result);
       }
-
-      if (!result) return;
       setCategoryData(result.data.result);
       // console.log(categoryData);
     } catch (err) {
@@ -31,8 +31,8 @@ function Detailbar({ getcategory }) {
 
   const fetchCartegory = (data) => {
     data.map((data) => {
-      console.log("cartegory", data);
-      setSendCate(data.laguange);
+      // console.log("cartegory", data.language);
+      setSendCate(data.language);
     });
   };
 
@@ -53,7 +53,7 @@ function Detailbar({ getcategory }) {
 
   const categoryList = () => {
     return categoryData.map((data) => {
-      console.log(data.laguage)
+      // console.log(data.language)
       return (
         <option key={data.id} value={data.language}>
           {data.language}
@@ -102,7 +102,7 @@ function Detailbar({ getcategory }) {
                   setSendCate(e.target.value);
                   let datalist = { category: e.target.value };
                   let category_id = onSelect(e);
-                  console.log(category_id);
+                  // console.log(category_id);
                   getcategory(category_id);
                 }}
               >

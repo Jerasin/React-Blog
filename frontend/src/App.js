@@ -16,6 +16,9 @@ import PubilcRoute from "./PubilcRoute";
 import TextEditor from "./components/TextEditor/TextEditor";
 import Setting from "./components/pages/Setting/Setting";
 import UserPost from "./components/pages/ีUserPost/UserPost";
+import EditCategory from './components/pages/Setting/EditCategory'
+import Users from './components/pages/Users/Users'
+import EditUser from './components/pages/Users/EditUser'
 import {
   BrowserRouter as Router,
   Switch,
@@ -35,6 +38,12 @@ function App() {
 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
+  const [resultSerach, setResultSerach] = useState(null)
+
+  const serachByKey = (keyWord) => {
+    // console.log("serachByKey" , keyWord);
+    setResultSerach(keyWord)
+  }
 
   const isLogin = () => {
     try {
@@ -52,7 +61,7 @@ function App() {
     <AuthContextProvider forceUpdate={forceUpdate}>
       <div className="position-relative pb-5 min-vh-100">
         <Router>
-          {isLogin() && <Herader />}
+          {isLogin() && <Herader getKeyWord={serachByKey} />}
 
           {/* {isLogin() && <Sidebar/>} */}
           <Switch>
@@ -65,7 +74,7 @@ function App() {
             </PubilcRoute>
 
             <PrivateRoute path="/main">
-              <Main />
+              <Main getByKeyWord={resultSerach} />
             </PrivateRoute>
 
             <PrivateRoute path="/post/:id">
@@ -90,6 +99,18 @@ function App() {
 
             <PrivateRoute path="/setting">
               <Setting />
+            </PrivateRoute>
+
+            <PrivateRoute path="/edit-category/:id">
+              <EditCategory />
+            </PrivateRoute>
+
+            <PrivateRoute path="/users">
+              <Users />
+            </PrivateRoute>
+
+            <PrivateRoute path="/edit-user/:id">
+              <EditUser />
             </PrivateRoute>
 
             <Route path="/" exact>

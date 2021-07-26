@@ -2,7 +2,7 @@
 
 
 // ? Default Short ID
-let shortID = 1;
+let shortID = 3;
 let shortPostID = 1;
 
 const autoGen_shortID = () => {

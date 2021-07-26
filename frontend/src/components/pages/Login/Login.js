@@ -169,12 +169,12 @@ export default function Login(props) {
                   <div className="row justify-content-center pb-2 ">
                     <div className="col text-center">
                       <a href={apiUrl + server.FB_LOGIN}>
-                        <i className="fab fa-facebook fa-2x" />
+                        <i className="fa fa-facebook fa-2x" />
                       </a>
                     </div>
                     <div className="col text-center">
                       <a href={apiUrl + server.GOOGLE_LOGIN}>
-                        <i className="fab fa-google  fa-2x" />
+                        <i className="fa fa-google  fa-2x" />
                       </a>
                     </div>
                   </div>

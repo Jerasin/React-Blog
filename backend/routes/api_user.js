@@ -258,4 +258,200 @@ router.post("/login", (req, res) => {
   }
 });
 
+// ? Get Users By limit
+router.post("/users", authorization, (req, res) => {
+  const { pageUser, limitUser } = req.body;
+  let startIndex = (pageUser - 1) * limitUser;
+  let endIndex = limitUser * pageUser;
+  const sql =
+    "SELECT u.id , u.short_id , u.email , a.role_name  , u.created_at , u.updated_at , u.updated_by FROM master_blog.users as u LEFT JOIN authen as a ON  u.user_role = a.id;";
+  try {
+    db.query(sql, (error, fields, files) => {
+      if (error) {
+        return res.json({ status: 404, result: error });
+      }
+
+      const dataLenth = fields.length;
+
+      const countPage = () => {
+        return parseInt(Math.ceil(dataLenth / limitUser));
+      };
+
+      const results = fields.splice(startIndex, endIndex);
+
+      const next = () => {
+        return parseInt(pageUser) + 1;
+      };
+
+      const now = () => {
+        return parseInt(pageUser);
+      };
+
+      const after = () => {
+        return parseInt(pageUser) - 1;
+      };
+
+      return res.json({
+        status: 200,
+        result: results,
+        after: after(),
+        now: now(),
+        next: next(),
+        countPage: countPage(),
+      });
+    });
+  } catch (err) {
+    return res.status(500).json({ status: 200, result: result });
+  }
+});
+
+// ? Delete Category
+router.delete("/user/:id", authorization, (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const sql = "DELETE FROM users WHERE id = ?";
+  try {
+    db.query(sql, id, (error, results, fields) => {
+      if (error) console.log(error);
+      return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: results });
+    });
+  } catch (err) {
+    return res.status(500).json({ status: 500, result: err });
+  }
+});
+
+// ? Get Role All
+router.get("/roles", authorization, (req, res) => {
+  const sql = ` SELECT * FROM authen;`;
+  try {
+    db.query(sql, (error, results, fields) => {
+      if (error) return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: results });
+    });
+  } catch (error) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
+// ? Get User By Id
+router.post(`/user/:id`, authorization, (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const sql = `SELECT u.id , u.short_id , u.email , a.role_name  , u.created_at , u.updated_at , u.updated_by
+    FROM users as u
+    LEFT JOIN authen as a
+    ON  u.user_role = a.id
+    WHERE u.id = ? `;
+
+  let testsql = mysql.format(sql, id);
+  console.log(testsql);
+  try {
+    db.query(sql, id, (error, results, fields) => {
+      if (error) return res.json({ status: 404, result: error });
+      console.log(results);
+      return res.json({ status: 200, result: results });
+    });
+  } catch (err) {
+    return res.status(500).json({ status: 500, result: err });
+  }
+});
+
+// ? Update user
+router.put(`/user/:id`, authorization, (req, res) => {
+  const { id } = req.params;
+  console.log(req.body);
+  const { email, role, updated_by, updated_at, role_id, forceUpdate_by } =
+    req.body;
+  const data = {
+    email: email,
+    user_role: role_id,
+    updated_by: forceUpdate_by,
+    updated_at: new Date(),
+  };
+
+  const sql = "UPDATE users SET ? WHERE id = ?  ";
+  try {
+    db.query(sql, [data, id], (error, fields, files) => {
+      if (error) return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: fields });
+    });
+  } catch (err) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
+router.post(`/user-role`, (req, res) => {
+  // console.log(req.body);
+
+  const { role, created_by } = req.body;
+  const data = {
+    role_name: role,
+    created_by: created_by,
+  };
+
+  const sql = "INSERT INTO authen SET ?";
+  try {
+    db.query(sql, data, (error, results, fields) => {
+      if (error) return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: results });
+    });
+  } catch (err) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
+router.post(`/user-serach`, (req, res) => {
+  // console.log(req.body);
+  const { userSearch, pageUser, limitUser } = req.body;
+  let startIndex = (pageUser - 1) * limitUser;
+  let endIndex = limitUser * pageUser;
+
+  console.log(userSearch);
+  console.log(pageUser);
+  console.log(limitUser);
+
+  const query = `%${userSearch}%`;
+  const sql = `SELECT * FROM master_blog.users
+  WHERE email like  ?`;
+
+  try {
+    db.query(sql, query, (error, result, fields) => {
+      if (error) return res.json({ status: 404, result: error });
+
+      
+      const dataLenth = result.length;
+
+      const countPage = () => {
+        return parseInt(Math.ceil(dataLenth / limitUser));
+      };
+
+      const results = result.splice(startIndex, endIndex);
+      console.log("results",results);
+      const next = () => {
+        return parseInt(pageUser) + 1;
+      };
+
+      const now = () => {
+        return parseInt(pageUser);
+      };
+
+      const after = () => {
+        return parseInt(pageUser) - 1;
+      };
+
+      return res.json({
+        status: 200,
+        result: results,
+        after: after(),
+        now: now(),
+        next: next(),
+        countPage: countPage(),
+      });
+    });
+  } catch (err) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
 module.exports = router;

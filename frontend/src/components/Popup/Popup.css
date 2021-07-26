@@ -6,6 +6,7 @@
   height: 100%;
   top: 0;
   left: 0;
+  z-index: 999;
 }
 
 .box {
@@ -19,17 +20,17 @@
   max-height: 230px;
   margin-top: 230px;
   background: #fff;
-  border-radius: .3rem;
+  border-radius: 0.3rem;
   padding: 0px;
-  border: 1px solid rgba(0,0,0,.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   overflow: auto;
 }
 
-button{
+button {
   font-size: inherit;
 }
 
-.fa-times{
+.fa-times {
   margin-right: 10px;
 }
 
@@ -39,7 +40,7 @@ button{
   border-bottom: 1px solid #dee2e6;
 }
 
-h5{
+h5 {
   font-size: 1.25rem;
   margin: 0px;
   width: 100%;

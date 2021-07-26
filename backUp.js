@@ -1,113 +1,95 @@
+import React, { useEffect, useState, useContext } from "react";
+import { httpClient } from "../../../utils/HttpClient";
+import { AuthContext } from "../../../AuthContext";
+import { useHistory, useLocation, useParams } from "react-router-dom";
+import Detailbar from "../../fragments/Detailbar/Detailbar";
+import { server, GET_POSTBYIDS_TEXTEDITOR_URL } from "../../../Constatns";
+import "./Post.css";
 
-  return (
-    <div className="container-fluid">
-      <h3 style={{ paddingTop: "15px", paddingBottom: "15px" }}>Edit Post</h3>
-      <div className="row m-0">
-        {/* Detailbar Left */}
-        <div className="col col-auto col-lg-4 p-2">
-          <div className="p-5">
-            <Detailbar getcategory={setCategory} />
+function Post() {
+  let { id } = useParams();
+  const [post, setPost] = useState(null);
+  const { forceUpdate } = useContext(AuthContext);
+  
+  useEffect(async () => {
+    try {
+      const result = await httpClient.post(
+        `${server.GET_POSTBYID_TEXTEDITOR_URL}/${id}`
+      );
+
+      setPost(result.data.result);
+    } catch (err) {
+      localStorage.clear();
+      forceUpdate();
+    }
+  }, []);
+
+  const post_data = () => {
+    if (!post) return;
+    // console.log(post)
+    return post.map((data) => {
+      console.log(data);
+      return (
+        <div key={id} className="container-fluid">
+          <div className="m-3">
+            <h3>Title: {data.title}</h3>
           </div>
-        </div>
-        {/* Main Create Post */}
-        <div className="col col-auto m-0 p-2">
-          <div className="container-fluid">
-            <label htmlFor="exampleFormControlInput1" className="form-label">
-              <b>Title Post:</b>
-            </label>
 
-            <input
-              type="text"
-              className="form-control"
-              id="title-post"
-              placeholder=""
-              value={editPost.title}
-              onChange={(e) => {
-                setEditPost({ ...editPost, title: e.target.value });
-              }}
-            />
+          <div className="container-fluid " />
+          <div className="row">
+            <div className="col">
+              <div className="container bg-light p-5 " style={{border: "2px solid black" ,borderRadius: "25px"}}>
+                <form>
+                  <div className="mb-3 text-center">
+                    <h3>Detail</h3>
+                  </div>
+                  <hr />
+                  <div className="mb-3 ">
+                    <label htmlFor="exampleInputEmail1" className="form-label">
+                      Create Date
+                    </label>
+                    <input
+                      className="form-control"
+                      value={data.created_at.split("T")[0]}
+                      disabled={true}
+                    />
+                  </div>
 
-            <Editor
-              onInit={(evt, editor) => (editorRef.current = editor)}
-              initialValue={editPost.post}
-              init={{
-                height: 500,
-                menubar: false,
-                statusbar: false,
-                object_resizing: "img",
-                resize_img_proportional: true,
-                plugins: [
-                  "advlist autolink lists link image charmap print preview anchor",
-                  "searchreplace visualblocks code fullscreen",
-                  "insertdatetime media table paste code help ",
-                ],
-                toolbar:
-                  "undo redo | formatselect | " +
-                  "bold italic backcolor link image | alignleft aligncenter " +
-                  "alignright alignjustify | bullist numlist outdent indent | " +
-                  "removeformat | help",
-                image_title: false,
-                automatic_uploads: true,
-                images_reuse_filename: true,
-                image_dimensions: false,
-                // ใส่ชื่อ class ที่ Tag img
-                image_class_list: [
-                  { title: "Responsive", value: "img-fluid p-3" },
-                ],
-
-                // ? ส่งรูปไปยัง server แบบไม่มี token
-                // images_upload_url:
-                //   "http://localhost:4000/api/post-texteditor/uploadsimages",
-
-                // ? ส่งรูปไปยัง server แบบมี token
-                images_upload_handler: imagesUploadHandler,
-
-                file_picker_types: "image",
-                file_picker_callback: function (cb, value, meta) {
-                  let input = document.createElement("input");
-                  input.setAttribute("type", "file");
-                  input.setAttribute("accept", "image/*");
-                  input.onchange = function (dialogApi, details) {
-                    let file = this.files[0];
-                    console.log("file" , file);
-                    cb(URL.createObjectURL(file), { title: file.name });
-                  };
-
-                  input.click();
-                },
-                content_style:
-                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-              }}
-            />
-
-            <div className="container-btn-post">
-              <div className="btn_addpost">
-                <button
-                  className="btn btn-primary"
-                  onClick={log}
-                  style={{ marginBottom: "5px" }}
-                >
-                  Add Post
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => {
-                    // history.goBack()
-                    history.goBack();
-                  }}
-                  style={{ marginBottom: "30px" }}
-                >
-                  Back
-                </button>
+                  <div className="mb-3">
+                    <label htmlFor="exampleInputEmail1" className="form-label">
+                      Category
+                    </label>
+                    <br />
+                    <input
+                      className="form-control"
+                      value={data.language}
+                      disabled={true}
+                    />
+                  </div>
+                </form>
               </div>
+            </div>
+            <a href="https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript">Test</a>
+            <div className="col-auto col-lg-8">
+            <a href="#">
+                        <i className="fab fa-google  fa-2x" />
+                      </a>
+              <div
+                className="bg-light m-1  min-vh-100 p-3"
+                dangerouslySetInnerHTML={{ __html: data.posts }}
+              />
             </div>
           </div>
         </div>
+      );
+    });
+  };
 
-        {/* Sidebar Right */}
-        {/* <div className="side">
-          <Sidebar />
-        </div> */}
-      </div>
+  return (
+    <div className="container-fluid" style={{}}>
+      {post_data()}
     </div>
   );
+}
+
+export default Post;

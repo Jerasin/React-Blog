@@ -37,11 +37,12 @@ function TextEditor(props) {
     );
     if (result.data.status === 200) {
       result.data.result.map((data) => {
+        console.log(data);
         setEditPost({
-          id: data.id,
+          id: data.post_id,
           title: data.title,
           post: data.posts,
-          category: data.laguange,
+          category: data.category_id,
           initialPost: data.posts,
         });
       });
@@ -114,6 +115,7 @@ function TextEditor(props) {
         post: editorRef.current.getContent(),
         user_created: getShortId(),
       };
+      console.log(data);
 
       try {
         let result = await httpClient.put(
@@ -226,12 +228,14 @@ function TextEditor(props) {
                     >
                       Edit
                     </button>
+                    {console.log(editPost.post)}
                   </div>
                   <div className="col col-auto  col-lg-2 p-0">
                     <button
                       className="btn btn-danger"
                       onClick={() => {
                         // history.goBack()
+                        forceUpdate();
                         history.push("/main");
                       }}
                       style={{ marginBottom: "30px" }}
