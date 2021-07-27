@@ -28,6 +28,8 @@ export const server = {
   SERACH_USER_URL: "/authen/user-serach",
   DELETE_USER_URL: "/authen/user",
   GET_ROLEALL_URL: "/authen/roles",
+  GET_ROLEBYLIMIT_URL: "/authen/user-roles",
+  DELETE_ROLE_URL: "/authen/role",
   CREATED_ROLE_URL: "/authen/user-role",
   TEST_API_URL: "/post/create-post-test",
 };

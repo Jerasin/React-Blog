@@ -381,7 +381,7 @@ router.put(`/user/:id`, authorization, (req, res) => {
   }
 });
 
-router.post(`/user-role`, (req, res) => {
+router.post(`/user-role`, authorization, (req, res) => {
   // console.log(req.body);
 
   const { role, created_by } = req.body;
@@ -401,7 +401,7 @@ router.post(`/user-role`, (req, res) => {
   }
 });
 
-router.post(`/user-serach`, (req, res) => {
+router.post(`/user-serach`, authorization, (req, res) => {
   // console.log(req.body);
   const { userSearch, pageUser, limitUser } = req.body;
   let startIndex = (pageUser - 1) * limitUser;
@@ -419,7 +419,6 @@ router.post(`/user-serach`, (req, res) => {
     db.query(sql, query, (error, result, fields) => {
       if (error) return res.json({ status: 404, result: error });
 
-      
       const dataLenth = result.length;
 
       const countPage = () => {
@@ -427,7 +426,7 @@ router.post(`/user-serach`, (req, res) => {
       };
 
       const results = result.splice(startIndex, endIndex);
-      console.log("results",results);
+      console.log("results", results);
       const next = () => {
         return parseInt(pageUser) + 1;
       };
@@ -451,6 +450,74 @@ router.post(`/user-serach`, (req, res) => {
     });
   } catch (err) {
     return res.json({ status: 500, result: err });
+  }
+});
+
+router.post(`/user-roles`, authorization, (req, res) => {
+  const { pageRoles, limitRoles } = req.body;
+  let startIndex = (pageRoles - 1) * limitRoles;
+  let endIndex = limitRoles * pageRoles;
+
+  console.log("pageRoles",pageRoles);
+  console.log(limitRoles);
+
+  const sql = `SELECT a.id , a.role_name , u.email , u.short_id , a.created_at , a.updated_at , a.updated_by
+  FROM authen  as a
+  LEFT JOIN users  as u
+  ON  a.created_by = u.id;`;
+
+  try {
+    db.query(sql, (error, result, fields) => {
+      if (error) return res.json({ status: 404, result: error });
+
+      const dataLenth = result.length;
+
+      const countPage = () => {
+        return parseInt(Math.ceil(dataLenth / limitRoles));
+      };
+
+      const results = result.splice(startIndex, endIndex);
+      console.log("results", results);
+      const next = () => {
+        return parseInt(pageRoles) + 1;
+      };
+
+      const now = () => {
+        return parseInt(pageRoles);
+      };
+
+      const after = () => {
+        return parseInt(pageRoles) - 1;
+      };
+
+      return res.json({
+        status: 200,
+        result: results,
+        after: after(),
+        now: now(),
+        next: next(),
+        countPage: countPage(),
+      });
+    });
+  } catch (err) {
+    return res.json({ status: 500, result: err });
+  }
+});
+
+
+// ? Delete Role
+router.delete("/role/:id", authorization, (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const sql = "DELETE FROM authen WHERE id = ?";
+  try {
+    db.query(sql, id, (error, results, fields) => {
+      if (error) console.log(error);
+      return res.json({ status: 404, result: error });
+      return res.json({ status: 200, result: results });
+    });
+  } catch (err) {
+    return res.status(500).json({ status: 500, result: err });
   }
 });
 

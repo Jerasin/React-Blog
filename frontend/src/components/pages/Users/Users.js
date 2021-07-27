@@ -7,28 +7,56 @@ import { AuthContext } from "../../../AuthContext";
 
 function Users(props) {
   const [usersList, setUsersList] = useState([]);
+  const [rolesList, setRolesList] = useState([]);
   const [createCategory, setCreateCategory] = useState({
     language: "",
     created_by: "",
   });
+
+  // Refresh Page
   const [reload, setReload] = useState(false);
   const { forceUpdate } = useContext(AuthContext);
+
+  // Users Page Get By limit
   const [pageUser, setPageUser] = useState(1);
   const [limitUser, setLimitUser] = useState(5);
+
+  // Role Page Get By limit
+  const [pageRoles, setPageRoles] = useState(1);
+  const [limitRoles, setLimitRoles] = useState(5);
+
   const [currentPage, setCurrentPage] = useState(null);
+
+  const [currentPageRoles, setCurrentPageRoles] = useState(null);
+
   const [userSearch, setUserSearch] = useState(null);
+
   const [createRole, setCreateRole] = useState({
     role: null,
     created_by: null,
   });
   const [searchUsers, setSearchUsers] = useState(null);
   const history = useHistory();
+  const [listMenu, setListMenu] = useState({
+    users: "list-group-item list-group-item-action active",
+    users_togger: true,
+    role: "list-group-item list-group-item-action ",
+    role_togger: false,
+  });
 
   useEffect(async () => {
     const result = await httpClient.post(server.GET_USERSBYLIMIT_URL, {
       pageUser,
       limitUser,
     });
+
+    const result_roles = await httpClient.post(server.GET_ROLEBYLIMIT_URL, {
+      pageRoles,
+      limitRoles,
+    });
+
+    setRolesList(result_roles.data.result)
+    setCurrentPageRoles(result_roles.data);
 
     if (searchUsers) {
       setUsersList(searchUsers.result);
@@ -171,6 +199,43 @@ function Users(props) {
     });
   };
 
+
+  const roles = () => {
+    return rolesList.map((data) => {
+      console.log("usersList",data);
+      return (
+        <tr key={data.id}>
+          <th scope="row">{data.id}</th>
+          <td>{data.role_name}</td>
+          <td> {data.email} </td>
+          <td>{data.created_at.split("T")[0]}</td>
+          <td>
+            <p className="me-4 ms-4">
+              <button
+                className="btn btn-primary  w-100"
+                onClick={() => {
+                  history.push(`edit-user/${data.id}`);
+                }}
+              >
+                Edit
+              </button>
+            </p>
+            <p
+              className="me-4 ms-4"
+              onClick={() => {
+                httpClient.delete(`${server.DELETE_ROLE_URL}/${data.id}`);
+                setReload(true);
+              }}
+            >
+              <button className="btn btn-danger w-100">Delete</button>
+            </p>
+          </td>
+        </tr>
+      );
+    });
+  };
+
+
   const handleSearch = async () => {
     try {
       const result = await httpClient.post(server.SERACH_USER_URL, {
@@ -193,81 +258,156 @@ function Users(props) {
   };
 
   return (
-    <div className="container-fluid p-0 p-lg-5">
-      <h1>Users</h1>
+    <div className="container-fluid p-0 p-lg-3">
+      <div className="m-3">
+        <h1>Users And Authorized</h1>
+      </div>
       <hr />
       <div className="row p-0 m-0 justify-content-center">
-        <div className="col col-auto col-lg-4 mb-3">
-          <div className="container bg-light">
-            <label className="mb-3 fs-4">Search User</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder=""
-              onChange={(e) => {
-                setUserSearch(e.target.value);
-              }}
-            />
-            <button
-              className="btn btn-primary mt-3 mb-3"
-              onClick={() => {
-                handleSearch();
-              }}
-            >
-              Serach
-            </button>
-          </div>
-
-          <div className="container bg-light mt-3">
-            <label className="mb-3 fs-4">Create Role</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder=""
-              onChange={(e) => {
-                setCreateRole({
-                  role: e.target.value,
-                  created_by: checkAuthen(),
-                });
-              }}
-            />
-            <button
-              className="btn btn-primary mt-3 mb-3"
-              type="submit"
-              onClick={() => {
-                handleCreateRole();
-                setReload(true);
-              }}
-            >
-              Create
-            </button>
+        <div className="col col-auto col-lg-2 mb-3">
+          <div className="container">
+            <div>
+              <h3 className="text-center">Menu List</h3>
+            </div>
+            <ul className="list-group text-center">
+              <li
+                className={listMenu.users}
+                onClick={() => {
+                  setListMenu({
+                    users: "list-group-item list-group-item-action active",
+                    users_togger: true,
+                    role: "list-group-item list-group-item-action ",
+                    role_togger: false,
+                  });
+                  
+                }}
+              >
+                Users
+              </li>
+              <li
+                className={listMenu.role}
+                onClick={() => {
+                  setListMenu({
+                    users: "list-group-item list-group-item-action ",
+                    users_togger: false,
+                    role: "list-group-item list-group-item-action active",
+                    role_togger: true,
+                  });
+                  console.log(listMenu);
+                }}
+              >
+                Role
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="col col-auto col-lg-8 ">
-          <div className="container bg-light border border-2 border-black">
-            <h4 className="mt-2">Category List</h4>
-            <hr />
-            <div className="table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Status</th>
-                  </tr>
-                </thead>
-                <tbody>{users()}</tbody>
-              </table>
+        {listMenu.users_togger && (
+          <div className="col col-auto col-lg-2 mb-3">
+            <div className="container bg-light">
+              <label className="mb-3 fs-4">Search User</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder=""
+                onChange={(e) => {
+                  setUserSearch(e.target.value);
+                }}
+              />
+              <button
+                className="btn btn-primary mt-3 mb-3"
+                onClick={() => {
+                  handleSearch();
+                }}
+              >
+                Serach
+              </button>
+            </div>
+          </div>
+        )}
 
-              <div className="container mt-3">
-                <nav aria-label="Page navigation example">{pagination()}</nav>
+        {listMenu.users_togger && (
+          <div className="col col-auto col-lg-8 ">
+            <div className="container bg-light border border-2 border-black">
+              <h4 className="mt-2">Category List</h4>
+              <hr />
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Role</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>{users()}</tbody>
+                </table>
+
+                <div className="container mt-3">
+                  <nav aria-label="Page navigation example">{pagination()}</nav>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {listMenu.role_togger && (
+          <div className="col col-auto col-lg-2 mb-3">
+            <div className="container bg-light">
+              <label className="mb-3 fs-4">Create Role</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder=""
+                onChange={(e) => {
+                  setCreateRole({
+                    role: e.target.value,
+                    created_by: checkAuthen(),
+                  });
+                }}
+              />
+              <button
+                className="btn btn-primary mt-3 mb-3"
+                type="submit"
+                onClick={() => {
+                  handleCreateRole();
+                  setReload(true);
+                }}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        )}
+
+        {listMenu.role_togger && (
+          <div className="col col-auto col-lg-8 ">
+            <div className="container bg-light border border-2 border-black">
+              <h4 className="mt-2">Roles List</h4>
+              <hr />
+              <div className="table-responsive">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Role Name</th>
+                      <th scope="col">Created By</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>{roles()}</tbody>
+                </table>
+
+                <div className="container mt-3">
+                  <nav aria-label="Page navigation example">{pagination()}</nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
